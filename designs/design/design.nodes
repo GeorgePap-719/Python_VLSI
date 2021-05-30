@@ -1,0 +1,45 @@
+UCLA nodes 1.0
+# Created     : Wed Oct  1 23:12:33 CDT 2003
+# User        : nataraj@saturn.ee.iastate.edu (Natarajan Viswanathan)
+# Platform    : SunOS 5.8 sparc SUNW,Sun-Fire-880
+
+NumNodes :          38
+NumTerminals :        8
+        a1          14         10 
+        a2           8         10 
+        a3           6         10 
+        a4           6         10 
+        a5           8         10 
+        a6           8         10 
+        a7           8         10 
+        a8           8         10 
+        a9          12         10 
+       a10          42         10 
+       a11           8         10 
+       a12          12         10 
+       a13           8         10 
+       a14           6         10 
+       a15          14         10 
+       a16           8         10 
+       a17           8         10 
+       a18          24         10 
+       a19           4         10 
+       a20           6         10 
+       a21           2         10 
+       a22          44         10 
+       a23          44         10 
+       a24          14         10 
+       a25          24         10 
+       a26          44         10 
+       a27          14         10 
+       a28           8         10 
+       a29           4         10 
+       a30           8         10
+        p1           1          1 terminal
+        p2           1          1 terminal
+        p3           1          1 terminal
+        p4           1          1 terminal
+        p5           1          1 terminal
+        p6           1          1 terminal
+        p7           1          1 terminal
+        p8           1          1 terminal
