@@ -1,29 +1,24 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 11 18:27:44 2021
-
-@author: root
-"""
-
-
-# 3rd try - parsing whole bookshelf in 1 file - creating functions & classes
+# parsing bookshelf-formatted designs
 
 """"   Set the current working dir infos   """
 
 import os
+
 folderName = "ibm01_mpl6_placed_and_nettetris_legalized"
 fileName = "ibm01"
 
 os.chdir('C:\\Users\\root\\Desktop\\Designs_Viglas\\ISPD\\{}'.format(folderName))
 
-
 """"    Classes    """
 
 
+# (number of cells + number of i/o pins) (node = cell or i/o pin, terminal = i/o pin)
+#     # NumTerminals : 8 (number of i/o pins)
+#     # a1 14 10 (name, width, height)
 class Node:
 
-    def __init__(self, nodeName, nodeWidth, nodeHeight, nodeType, nodeX=0, nodeY=0):
-        self.nodeName = nodeName
+    def __init__(self, node_name, nodeWidth, nodeHeight, nodeType, nodeX=0, nodeY=0):
+        self.nodeName = node_name
         self.nodeWidth = nodeWidth
         self.nodeHeight = nodeHeight
         self.nodeType = nodeType
@@ -31,9 +26,9 @@ class Node:
         self.nodeY = nodeY
 
     # update the Coordinates x & y
-    def set_X_Y(self, nodeX, nodeY):
-        self.nodeX = nodeX
-        self.nodeY = nodeY
+    def set_x_y(self, node_x, node_y):
+        self.nodeX = node_x
+        self.nodeY = node_y
 
     def __str__(self):
         return (str(self.nodeName) + " " + str(self.nodeWidth) + " " +
@@ -41,19 +36,20 @@ class Node:
                 str(self.nodeX) + " " + str(self.nodeY))
 
 
+# TODO add comments
 class Net:
 
-    def __init__(self, netName, netDegree):
-        self.netName = netName
-        self.netDegree = netDegree
+    def __init__(self, net_name, net_degree):
+        self.netName = net_name
+        self.netDegree = net_degree
         self.netNodes = []  # list of nodes for the current net
 
     # appending the nodes that are part of this net
-    def appendNode(self, node):
+    def append_node(self, node):
         self.netNodes.append(node)
 
     # displaying Net infos and the nodes that are part of it
-    def displayNet(self):
+    def display_net(self):
         print("\n***")
         print(str(self.netName) + " - netDegree =  " + str(self.netDegree))
         print("Nodes of this net: ")
@@ -93,7 +89,6 @@ class Row:
 
 
 def verifyFiles():
-
     import time
 
     ext_tuple = [".aux", ".nets", ".nodes", ".pl", ".scl", ".wts"]
@@ -101,48 +96,49 @@ def verifyFiles():
 
     list_ext = []
 
+    name = 0
+    extensions = 0
     for f in os.listdir():
-
-        name, exte = os.path.splitext(f)
-        list_ext.append(exte)
+        name, extensions = os.path.splitext(f)
+        list_ext.append(extensions)
 
     # Sort them both, in order to compare them
     ext_tuple.sort()
     list_ext.sort()
 
-    fixedLen = len(ext_tuple)
+    fixed_length = len(ext_tuple)
     readLen = len(list_ext)
 
     if ext_tuple == list_ext:
 
-        if(os.stat('{}.aux'.format(name)).st_size == 0):
+        if os.stat('{}.aux'.format(name)).st_size == 0:
             flag = False
             print(".aux file is empty")
 
-        if(os.stat('{}.nodes'.format(name)).st_size == 0):
+        if (os.stat('{}.nodes'.format(name)).st_size == 0):
             flag = False
             print(".nodes file is empty")
 
-        if(os.stat('{}.scl'.format(name)).st_size == 0):
+        if (os.stat('{}.scl'.format(name)).st_size == 0):
             flag = False
             print(".scl file is empty")
 
-        if(os.stat('{}.pl'.format(name)).st_size == 0):
+        if (os.stat('{}.pl'.format(name)).st_size == 0):
             flag = False
             print(".pl file is empty")
 
-        if(os.stat('{}.nets'.format(name)).st_size == 0):
+        if (os.stat('{}.nets'.format(name)).st_size == 0):
             flag = False
             print(".scl file is empty")
 
-        if(os.stat('{}.wts'.format(name)).st_size == 0):
+        if (os.stat('{}.wts'.format(name)).st_size == 0):
             flag = False
             print(".wts file is empty")
 
         print("\n")
 
         # Exiting message
-        if(flag is False):
+        if flag is False:
             time.sleep(1)
             print("Shutting down", end="")
             time.sleep(1)
@@ -154,7 +150,7 @@ def verifyFiles():
         else:
             print("\n- All files are verified!")
 
-    elif fixedLen > readLen:
+    elif fixed_length > readLen:
         flag = False
         print("- Some files are missing.\n")
 
@@ -188,38 +184,37 @@ def verifyFiles():
 def parser():
     """               Start of Parse .nodes               """
 
-    f = open("{}.nodes".format(fileName))  # open .nodes file
-    lines = f.readlines()
+    file = open("{}.nodes".format(fileName))
+    lines = file.readlines()
 
     saved = 0
-    nodeList = []  # List of all nodes for the current circuit
+    node_list = []  # List of all nodes for the current circuit
 
     # Locate NumNodes + NumTerminals
     for i in range(len(lines)):
 
-        tempParsing = lines[i].strip(" ,.\n#:").upper()
+        # TODO better name
+        temp_parsing = lines[i].strip(" ,.\n#:").upper()  # upper everything cause of insensitive chars
 
         # Locate NumNodes
-        if tempParsing.find("NUMNODES") != -1:
+        if temp_parsing.find("NUMNODES") != -1:
+            point = temp_parsing.find("NUMNODES")
+            length = len("NUMNODES")
 
-            point = tempParsing.find("NUMNODES")
-            leng = len("NUMNODES")
+            num_nodes = temp_parsing[point + length:]
+            num_nodes = num_nodes.strip(": ")
 
-            numNodes = tempParsing[point+leng:]
-            numNodes = numNodes.strip(": ")
-
-            numNodes = int(numNodes)
+            # num_nodes = int(num_nodes) maybe for later use.
 
         # Locate NumTerminals
-        if tempParsing.find("NUMTERMINALS") != -1:
+        if temp_parsing.find("NUMTERMINALS") != -1:
+            point = temp_parsing.find("NUMTERMINALS")
+            length = len("NUMTERMINALS")
 
-            point = tempParsing.find("NUMTERMINALS")
-            leng = len("NUMTERMINALS")
+            number_of_terminals = temp_parsing[point + length:]
+            number_of_terminals = number_of_terminals.strip(": ")
 
-            numTer = tempParsing[point+leng:]
-            numTer = numTer.strip(": ")
-
-            numTer = int(numTer)
+            number_of_terminals = int(number_of_terminals)
 
             # Starting point for the 2nd for, +1 for the next line.
             saved = i + 1
@@ -231,22 +226,23 @@ def parser():
         temp = lines[j].strip("\t,.\n#: ")
         temp = temp.split()
 
-        nodeName = temp[0]  # Node Name
-        nodeWidth = int(temp[1])  # Node Width  - Platos
-        nodeHeight = int(temp[2])  # Node Height  - Ypsos
+        node_name = temp[0]  # Node Name
+        node_width = int(temp[1])  # Node Width  - Platos
+        node_height = int(temp[2])  # Node Height  - Ypsos
+        node_type = ""
 
         if len(temp) == 3:  # len == 3 -> Non Terminal
-            nodeType = "Non - Terminal"
+            node_type = "Non - Terminal"
         elif len(temp) == 4:  # len == 4 -> Terminal
-            nodeType = "Terminal"
+            node_type = "Terminal"
         else:
-            # Length isnt 3 or 4 - Modified file
+            # Length is not 3 or 4 - Modified file
             print("Error. File is modified!")
 
-        newNode = Node(nodeName, nodeWidth, nodeHeight, nodeType)
-        nodeList.append(newNode)  # nodeX,nodeY not found yet
+        new_node = Node(node_name, node_width, node_height, node_type)
+        node_list.append(new_node)  # nodeX,nodeY not found yet
 
-    f.close()  # Close .nodes file
+    file.close()  # Close .nodes file
 
     """               End of Parse .nodes               """
 
@@ -257,30 +253,30 @@ def parser():
 
     """               Start of Parse .pl               """
 
-    f = open("{}.pl".format(fileName))  # open .pl file
-    lines = f.readlines()
+    file = open("{}.pl".format(fileName))  # open .pl file
+    lines = file.readlines()
 
     # Skip first 4 lines
     for i in range(4, len(lines)):
-        tempParsing = lines[i].strip()
-        tempParsing = tempParsing.split()
+        temp_parsing = lines[i].strip()
+        temp_parsing = temp_parsing.split()
 
-        nodeName = tempParsing[0]  # Node Name
-        nodeX = int(tempParsing[1])  # Lower Left Corner x
+        node_name = temp_parsing[0]  # Node Name
+        nodeX = int(temp_parsing[1])  # Lower Left Corner x
 
         # tempParsing[2] also includes " : N ...."
         # Need to filter it, in order to obtain 'y'
-        tempParsing[2] = tempParsing[2].split(":")
+        temp_parsing[2] = temp_parsing[2].split(":")  # TODO check it
 
-        nodeY = int(tempParsing[2][0])  # Lower Left Corner y
+        node_y = int(temp_parsing[2][0])  # Lower Left Corner y
 
         # match the nodeNames and
-        # update the nodeX,nodeY accordind to their coordinates
-        for node in nodeList:
-            if (node.nodeName == nodeName):
-                node.set_X_Y(nodeX, nodeY)
+        # update the nodeX,nodeY according to their coordinates
+        for node in node_list:
+            if node.nodeName == node_name:
+                node.set_x_y(nodeX, node_y)
 
-    f.close()  # Close .pl file
+    file.close()  # Close .pl file
     """               End of Parse .pl               """
 
     """          
@@ -290,8 +286,8 @@ def parser():
 
     """               Start of Parse .nets               """
 
-    f = open("{}.nets".format(fileName))  # open .nets file
-    lines = f.readlines()
+    file = open("{}.nets".format(fileName))  # open .nets file
+    lines = file.readlines()
 
     saved = 0
     netList = []  # List of all nets for the current circuit
@@ -299,15 +295,14 @@ def parser():
     # Locate NumNets
     for i in range(len(lines)):
 
-        tempParsing = lines[i].strip(" ,.\n#:").upper()
+        temp_parsing = lines[i].strip(" ,.\n#:").upper()
 
         # Parse NumNets
-        if tempParsing.find("NUMNETS") != -1:
+        if temp_parsing.find("NUMNETS") != -1:
+            point = temp_parsing.find("NUMNETS")
+            length = len("NUMNETS")
 
-            point = tempParsing.find("NUMNETS")
-            leng = len("NUMNETS")
-
-            numNets = tempParsing[point+leng:]
+            numNets = temp_parsing[point + length:]
             numNets = numNets.strip(": ")
 
             numNets = int(numNets)
@@ -317,41 +312,41 @@ def parser():
 
     # Locating all NetDegree's
     # Filtering with .split
-    nameCounter = -1  # counter for name of the Nets
+    name_nets_counter = -1
     for i in range(saved, len(lines)):
 
-        tempParsing = lines[i].strip(" ,.\n#:").upper()
+        # TODO add comment?
+        temp_parsing = lines[i].strip(" ,.\n#:").upper()
 
         # Locate NetDegree
-        if tempParsing.find("NETDEGREE") != -1:
+        if temp_parsing.find("NETDEGREE") != -1:
 
-            nameCounter += 1               # +1 for the next Net Name
+            name_nets_counter += 1
 
-            tempParsing = tempParsing.replace(":", " ")
-            tempParsing = tempParsing.split()
+            temp_parsing = temp_parsing.replace(":", " ")
+            temp_parsing = temp_parsing.split()
 
             # print(tempParsing,type(tempParsing))
 
-            netDegree = int(tempParsing[1])  # NetDegree
-            netName = "net{}".format(nameCounter)  # Net Name
+            netDegree = int(temp_parsing[1])
+            netName = "net{}".format(name_nets_counter)
 
             # print(netName)
 
             # Read the "netDegree" number of lines of each Net
             # netDegree+1 because "range" stops at (max - 1)
             # Starting from 1, to skip the " NetDegree : x " line
-
             newNet = Net(netName, netDegree)
 
-            for j in range(1, netDegree+1):
-                nextLine = lines[i+j].split()  # contains node name & more
+            for j in range(1, netDegree + 1):
+                nextLine = lines[i + j].split()  # contains node name & more
                 currentNode = str(nextLine[0])  # parse only the node name
 
-                newNet.appendNode(currentNode)
+                newNet.append_node(currentNode)
 
             netList.append(newNet)  # append every net on the list of nets
 
-    f.close()  # Close .nets file
+    file.close()  # Close .nets file
     """               End of Parse .nets               """
 
     """                   
@@ -366,31 +361,32 @@ def parser():
 
     """               Start of Parse .scl               """
 
-    f = open("{}.scl".format(fileName))  # open .scl file
-    lines = f.readlines()
+    file = open("{}.scl".format(fileName))  # open .scl file
+    lines = file.readlines()
 
     rowList = []  # List of all rows for the current circuit
 
-    nameCounter = -1  # counter for name of the Rows
+    name_nets_counter = -1  # counter for name of the Rows
     for i in range(len(lines)):
 
-        tempParsing = lines[i].strip(" ,.\n#:").upper()
+        temp_parsing = lines[i].strip(" ,.\n#:").upper()
 
-        if tempParsing.find("COREROW HORIZONTAL") != -1:
-            nameCounter += 1        # +1 for the next Row Name
+        if temp_parsing.find("COREROW HORIZONTAL") != -1:
+            name_nets_counter += 1  # +1 for the next Row Name
 
-            rowName = "row{}".format(nameCounter)  # Row Name
+            rowName = "row{}".format(name_nets_counter)  # Row Name
 
             # Parse Row's Coordinate and check if Coordinate is at (i+1) position
             # (i+1) = Coordinate
-            temp = lines[i+1].strip(" ,.\n#:").upper()
+            temp = lines[i + 1].strip(" ,.\n#:").upper()
 
             if temp.find("COORDINATE") != -1:
 
                 point = temp.find("COORDINATE")
-                leng = len("COORDINATE")
+                length = len("COORDINATE")
 
-                rowCoord = temp[point+leng:]
+                rowCoord = temp[point + length:]
+
                 rowCoord = rowCoord.strip(": ")
                 # Lower Left Corner y coordinate of the row
                 rowCoord = int(rowCoord)
@@ -400,54 +396,58 @@ def parser():
 
             # Parse Row's Height and check if Height is at (i+2) position
             # (i+2) = Height
-            temp = lines[i+2].strip(" ,.\n#:").upper()
+            temp = lines[i + 2].strip(" ,.\n#:").upper()
 
             if temp.find("HEIGHT") != -1:
 
                 point = temp.find("HEIGHT")
-                leng = len("HEIGHT")
+                length = len("HEIGHT")
 
-                rowHeight = temp[point+leng:]
+                rowHeight = temp[point + length:]
+
                 rowHeight = rowHeight.strip(": ")
                 rowHeight = int(rowHeight)  # Row Height
 
             else:
                 print("Error: File is modified.")
 
-            # Parse SubrowOrigin & Numsites & check if their position is (at i+7)
+            # Parse SubRow Origin & Numsites & check if their position is (at i+7)
             # (i+7) = SubrowOrigin + Numsites
-            temp = lines[i+7].strip(" ,.\n#:").upper()
+            temp = lines[i + 7].strip(" ,.\n#:").upper()
 
             if temp.find("SUBROWORIGIN") != -1:
 
                 point = temp.find("SUBROWORIGIN")
-                leng = len("SUBROWORIGIN")
+                length = len("SUBROWORIGIN")
 
-                rowSub = temp[point+leng:]
-                rowSub = rowSub.strip(": ")
-                rowSub = rowSub.strip(" ,.\n#:").upper()
+                row_sub = temp[point + length:]
 
-                if rowSub.find("NUMSITES") != -1:
-                    point2 = rowSub.find("NUMSITES")
+                row_sub = row_sub.strip(": ")
+                row_sub = row_sub.strip(" ,.\n#:").upper()
+
+                if row_sub.find("NUMSITES") != -1:
+                    point2 = row_sub.find("NUMSITES")
 
                     # filter and locate Numsites
-                    numSites = rowSub[point2+leng:]
+                    numSites = row_sub[point2 + length:]
+
                     numSites = numSites.strip(": ")
                     numSites = int(numSites)  # Lower Right Corner x Coordinate
 
                     # filter and locate SubrowOrigin
-                    rowSub = rowSub[:point2]
-                    rowSub = int(rowSub)  # Lower Left Corner x Coordinate
+                    row_sub = row_sub[:point2]
+                    row_sub = int(row_sub)  # Lower Left Corner x Coordinate
 
             else:
                 print("Error: File is modified.")
 
             # rowHeight + rowCoord = yMax of each row
-            newRow = Row(rowName, rowCoord,
-                         (rowHeight+rowCoord), rowSub, numSites)
-            rowList.append(newRow)  # append every row on the list of rows
+            new_row = Row(rowName, rowCoord,
+                          (rowHeight + rowCoord), row_sub, numSites)
 
-    f.close()  # Close .scl file
+            rowList.append(new_row)  # append every row on the list of rows
+
+    file.close()  # Close .scl file
     """               End of Parse .scl              """
 
     """

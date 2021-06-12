@@ -2,7 +2,7 @@
 
 # TODO add constructor to avoid compatibility issues on windows or linux due to different absolute paths.
 class NodesParser:
-    nodes_file = open("../designs/design/design.nodes", "r")
+    nodes_file = open("../../docs/designs/design/design.nodes", "r")
     print(nodes_file.read())
 
     # (number of cells + number of i/o pins) (node = cell or i/o pin, terminal = i/o pin)
