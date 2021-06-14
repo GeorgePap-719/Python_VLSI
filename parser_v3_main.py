@@ -7,7 +7,7 @@ Created on Fri Jun 11 18:27:44 2021
 
 
 #3rd try - parsing whole bookshelf in 1 file - main and import functions.py
-from functions import *
+from Python_VLSI.vlsi.functions import *
 
 
 
