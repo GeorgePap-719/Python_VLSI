@@ -13,6 +13,7 @@
 
 
 # Environments
+.editorconfig
 .env
 .venv
 env/
