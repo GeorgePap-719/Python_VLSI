@@ -1,5 +1,6 @@
 # This class is designed to handle .nets files
 
+# TODO delete it
 # TODO add constructor to avoid compatibility issues on windows or linux due to different absolute paths.
 class NodesParser:
     nodes_file = open("../../docs/designs/design/design.nodes", "r")
