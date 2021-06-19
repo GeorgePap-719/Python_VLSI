@@ -1,0 +1,76 @@
+functions.py file:
+____________________________
+Objects:
+
+0) class Point:
+	x
+	y
+__________________________
+
+1) class Node:
+	nodeName
+	nodeWidth
+	nodeHeight
+	nodeType (terminal - non terminal)
+	
+	nodeX	#Lower Left Corner x
+	nodeY	#Lower Left Corner y
+
+	lower_left_corner = Point(None, None)
+    lower_right_corner = Point(None, None)
+    upper_left_corner = Point(None, None)
+    upper_right_corner = Point(None, None)
+
+	node_nets = []  # net_names that this node are part of
+    node_row = Row(None, None, None, None, None)
+__________________________
+
+2) Row:
+	row_name
+	y_min 
+	y_max
+	x_min
+	x_max
+	row_nodes = []  	# list of nodes that are placed in this row
+    row_nets = [] 		 # list of nets that are part of this row 			# TODO
+	lower_left_corner = Point(x_min, y_min)
+	lower_right_corner = Point(x_max, y_min)
+	upper_left_corner = Point(x_min, y_max)
+	upper_right_corner = Point(x_max, y_max)	
+__________________________
+
+3) Net:
+	net_name
+	net_degree
+	net_nodes = []  # list of nodes for the current net
+	net_rows = []  # list of rows that this net belongs to 			# TODO
+	x_min 
+    x_max 
+    y_min 
+    y_max 
+    wirelength 
+    net_size
+____________________________________________________
+Implemented:
+
+	- def parser():
+		nodeList = [] 	# List of all nodes for the current circuit    (Done)			- Line: 354 + 376
+		netList = [] 		# List of all nets for the current circuit		(Done)			- Line: 455
+		rowList = []   	# List of all rows for the current circuit		(Done)			- Line: 565
+	
+	- class node:
+		node_nets = []  		# List of net_names that this node are part of		(Done)		- Line: 453
+		node_row   				# Row that this node is placed in							(Done)		- Line: 577
+	
+	- class row:
+		row_nodes = [] 		# List of nodes that are placed on this row		(Done)		- Line: 578
+		row_nets = []			# List of nets that are part of this row				#TODO	
+		
+		
+	- class net:
+		net_nodes = []  		# List of node for the current net				(Done)		- Line: 444    - node object, not node_name
+		net_rows = []			# List of rows that this net belongs to		#TODO
+		def calculate_net_size																(Done)		- Line: 153
+		def calculate_net_wirelength													(Done)		- Line: 150
+
+---- 

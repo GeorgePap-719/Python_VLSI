@@ -1,14 +1,20 @@
-# 3rd try - parsing whole bookshelf in 1 file - creating functions & classes
+# parsing bookshelf-formatted designs
 
 """"   Set the current working dir infos   """
 
 import os
 
+"""
 folderName = "ibm01_mpl6_placed_and_nettetris_legalized"
 fileName = "ibm01"
 
 os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\ISPD\\{}'.format(
     folderName))
+"""
+
+folderName = "design"
+fileName = "design"
+os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\{}'.format(folderName))
 
 """"    Classes    """
 
@@ -38,17 +44,31 @@ class Node:
         self.upper_left_corner = Point(None, None)
         self.upper_right_corner = Point(None, None)
 
+        self.node_nets = []  # net_names that this node are part of #TODO net objects
+        self.node_row = Row(None, None, None, None, None)  # row that this node is placed in
+
     # update the Coordinates x & y
     def set_x_y(self, node_x, node_y):
         self.node_x = node_x
         self.node_y = node_y
 
+    def set_row(self, row):
+        self.node_row = row
+
+    # update the list of nets
+    def append_net(self, net_name):
+        self.node_nets.append(str(net_name))
+
     # calculate the coordinates of the 4-corners of the node
+    # Terminals are dots, they do not have corners
     def set_points(self, x_min, x_max, y_min, y_max):
-        self.lower_left_corner = Point(x_min, y_min)
-        self.lower_right_corner = Point(x_max, y_min)
-        self.upper_left_corner = Point(x_min, y_max)
-        self.upper_right_corner = Point(x_max, y_max)
+        if self.node_type == "Terminal":
+            pass
+        else:
+            self.lower_left_corner = Point(x_min, y_min)
+            self.lower_right_corner = Point(x_max, y_min)
+            self.upper_left_corner = Point(x_min, y_max)
+            self.upper_right_corner = Point(x_max, y_max)
 
     def display_node_corners(self):
         print("\nNode name: " + str(self.node_name)
@@ -56,6 +76,16 @@ class Node:
               + "\nLower Right Corner: " + str(self.lower_right_corner)
               + "\nUpper Left Corner: " + str(self.upper_left_corner)
               + "\nUpper Right Corner: " + str(self.upper_right_corner))
+
+    def display_node_row(self):
+        print("\nNode " + str(self.node_name)
+              + " is placed in row: " + str(self.node_row.row_name))
+
+    def display_node_nets(self):
+        print("\nNode " + str(self.node_name)
+              + " belongs to the net(s):  ")
+        for i in self.node_nets:
+            print(i, end=" ")
 
     def __str__(self):
         return (str(self.node_name) + " " + str(self.node_width) + " " +
@@ -69,30 +99,75 @@ class Net:
         self.net_name = net_name
         self.net_degree = net_degree
         self.net_nodes = []  # list of nodes for the current net
+        self.net_rows = []  # list of rows that this net belongs to # TODO on parser()
+        self.x_min = None
+        self.x_max = None
+        self.y_min = None
+        self.y_max = None
+        self.wirelength = None
+        self.net_size = None
 
-    # add nodes that are part of this net into the list
+    # update the list of nodes of this net
     def append_node(self, node):
         self.net_nodes.append(node)
 
+    def find_coordinates_of_net(self):
+        start = 0
+        for node in self.net_nodes:
+            start += 1
+
+            if start == 1 and node.node_type == "Non_Terminal":
+                self.x_min = node.lower_left_corner.x
+                self.x_max = node.lower_right_corner.x
+                self.y_min = node.lower_left_corner.y
+                self.y_max = node.upper_right_corner.y
+            elif start == 1 and node.node_type == "Terminal":
+                self.x_min = node.node_x
+                self.x_max = node.node_x
+                self.y_min = node.node_y
+                self.y_max = node.node_y
+            else:
+                if node.node_type == "Non_Terminal":
+                    if node.lower_left_corner.x < self.x_min:
+                        self.x_min = node.lower_left_corner.x
+                    if node.lower_right_corner.x > self.x_max:
+                        self.x_max = node.lower_right_corner.x
+                    if node.lower_left_corner.y < self.y_min:
+                        self.y_min = node.lower_left_corner.y
+                    if node.upper_right_corner.y > self.y_max:
+                        self.y_max = node.upper_right_corner.y
+                else:
+                    if node.node_x < self.x_min:
+                        self.x_min = node.node_x
+                    if node.node_x > self.x_max:
+                        self.x_max = node.node_x
+                    if node.node_y < self.y_min:
+                        self.y_min = node.node_y
+                    if node.node_y > self.y_max:
+                        self.y_max = node.node_y
+
+    def calculate_net_wirelength(self):
+        self.wirelength = (self.x_max - self.x_min) + (self.y_max - self.y_min)
+
+    def calculate_net_size(self):
+        self.net_size = (self.x_max - self.x_min) * (self.y_max - self.y_min)
+
     def display_net(self):
-        print("\n***")
-        print(str(self.net_name) + " - netDegree =  " + str(self.net_degree))
+        print("\n" + str(self.net_name)
+              + " - netDegree =  " + str(self.net_degree))
         print("Nodes of this net: ")
-        for i in self.net_nodes:
-            print(i, end=" ")
+        for node in self.net_nodes:
+            print(node.node_name, end=" ")
+
+    def display_net_size(self):
+        print(str(self.net_name) + " size = " + str(self.net_size))
+
+    def display_net_wirelength(self):
+        print(str(self.net_name) + " wirelength = " + str(self.wirelength))
 
     # not displaying the nodes that are part of the net
     def __str__(self):
         return str(self.net_name) + " " + str(self.net_degree)
-
-    """
-    # testing the list of nodes -> h lista einai attribute tis klasis net
-    def oeo(self):
-        print("\n" + str(self.netName) )
-        print(type(self.netNodes), len(self.netNodes))
-        for i in self.netNodes:
-            print(i)
-    """
 
 
 class Row:
@@ -103,10 +178,30 @@ class Row:
         self.y_max = y_max
         self.x_min = x_min
         self.x_max = x_max
+        self.row_nodes = []  # list of nodes that are placed in this row
+        self.row_nets = []  # list of nets that are part of this row # TODO on parser()
         self.lower_left_corner = Point(x_min, y_min)
         self.lower_right_corner = Point(x_max, y_min)
         self.upper_left_corner = Point(x_min, y_max)
         self.upper_right_corner = Point(x_max, y_max)
+
+    # update the list of nodes of this row
+    def append_node(self, node):
+        if node.node_type == "Terminal":
+            pass
+        else:
+            self.row_nodes.append(node)
+
+    # update the list of nets of this row
+    def append_net(self, net):  # TODO on parser()
+        self.row_nets.append(net)
+
+    # display row name and nodes of this row
+    def display_row(self):
+        print("\n" + str(self.row_name))
+        print("Nodes of this row: ")
+        for i in self.row_nodes:
+            print(i, end=" ")
 
     def __str__(self):
         return (str(self.row_name) + " - y_min: "
@@ -196,7 +291,8 @@ def verify_files():
     return flag
 
 
-def parser():
+def parser():  # parsing the whole circuit
+
     """               Start of Parse .nodes               """
 
     file = open("{}.nodes".format(fileName))
@@ -241,11 +337,11 @@ def parser():
         temp = temp.split()
 
         node_name = temp[0]
-        node_width = int(temp[1])  # Platos
-        node_height = int(temp[2])  # Ypsos
+        node_width = int(temp[1])
+        node_height = int(temp[2])
 
         if len(temp) == 3:  # len == 3 -> Non Terminal
-            node_type = "Non - Terminal"
+            node_type = "Non_Terminal"
         elif len(temp) == 4:  # len == 4 -> Terminal
             node_type = "Terminal"
         else:
@@ -260,11 +356,6 @@ def parser():
 
     """               End of Parse .nodes               """
 
-    """
-    for i in node_list:
-        print(i)
-    """
-
     """               Start of Parse .pl               """
 
     file = open("{}.pl".format(fileName))
@@ -273,18 +364,13 @@ def parser():
     # Skip first 4 lines - comments
     for i in range(4, len(lines)):
         temp_parsing = lines[i].strip()
-        temp_parsing = temp_parsing.split()
+        temp_parsing = temp_parsing.split()  # temp_parsing type = list
 
         node_name = temp_parsing[0]
-        node_x = int(temp_parsing[1])  # Lower Left Corner x
+        node_x = int(temp_parsing[1])  # Lower Left Corner x Coordinate
+        node_y = int(temp_parsing[2])  # Lower Left Corner y Coordinate
 
-        # temp_parsing[2] also includes " : N ...."
-        # Need to filter it, in order to obtain 'y'
-        temp_parsing[2] = temp_parsing[2].split(":")
-
-        node_y = int(temp_parsing[2][0])  # Lower Left Corner y
-
-        # match the nodeNames and
+        # match the node_names and
         # update the node_x,node_y according to their coordinates
         for node in node_list:
             if node.node_name == node_name:
@@ -294,11 +380,6 @@ def parser():
 
     file.close()  # Close .pl file
     """               End of Parse .pl               """
-
-    """          
-    for i in node_list:
-        print(i)
-    """
 
     """               Start of Parse .nets               """
 
@@ -328,7 +409,7 @@ def parser():
 
     # Locating all NetDegree's
     # Filtering with .split
-    name_counter = -1  # counter for name of the Nets
+    name_counter = -1  # counter for names of the Nets
     for i in range(saved, len(lines)):
 
         temp_parsing = lines[i].strip(" ,.\n#:").upper()
@@ -346,8 +427,6 @@ def parser():
             net_degree = int(temp_parsing[1])
             net_name = "net{}".format(name_counter)
 
-            # print(net_name)
-
             # Read the "netDegree" number of lines of each Net
             # netDegree+1 because "range" stops at (max - 1)
             # Starting from 1, to skip the " NetDegree : x " line
@@ -358,20 +437,31 @@ def parser():
                 next_line = lines[i + j].split()  # contains node name & more
                 current_node = str(next_line[0])  # parse only the node name
 
-                new_net.append_node(current_node)
+                # match the node name, to the node object
+                for node in node_list:
+                    if node.node_name == current_node:
+                        new_net.append_node(node)
+
+                # new_net.append_node(current_node)   #it appends node name
+
+                # find on which nets, the current_node belongs to
+                # and then updating the net_list of the current_node
+                # according to the matches
+                for node in node_list:
+                    if node.node_name == current_node:
+                        node.append_net(new_net.net_name)
 
             net_list.append(new_net)  # add every net on the list of nets
 
     file.close()  # Close .nets file
     """               End of Parse .nets               """
 
-    """                   
-    a = 0 
-    for i in net_list:
-        a = a+1
-        # i.displayNet()
-        i.oeo()
-        if a == 20:
+    """
+    a = 0
+    for i in node_list:
+        i.display_node_nets()
+        a += 1
+        if a == 30:
             break
     """
 
@@ -379,6 +469,12 @@ def parser():
 
     file = open("{}.scl".format(fileName))
     lines = file.readlines()
+
+    row_name = None
+    row_coordinate = None
+    row_sub = None
+    row_numsites = None
+    row_height = None
 
     row_list = []  # List of all rows for the current circuit
 
@@ -470,13 +566,59 @@ def parser():
     file.close()  # Close .scl file
     """               End of Parse .scl              """
 
+    """   Find the row, each node is placed in   """
+    # check for both lower_y and upper_y to avoid Terminal nodes
+    # Terminals nodes, are outside of the rows.
+    for row in row_list:
+        for node in node_list:
+            if (node.lower_left_corner.y == row.lower_left_corner.y and
+                    node.upper_left_corner.y == row.upper_left_corner.y):
+                node.set_row(row)
+                row.append_node(node)
+
+    # TESTING PRINTS:
+    """
+    for net in net_list:
+        for node in node_list:
+            if node.node_name == net.net
+    """
+
+    """
+    for node in node_list:
+        node.display_node_row()
+    """
+
+    """
+    for row in row_list:
+        row.display_row()
+    """
+
     """
     for i in row_list:
         print(i)
+    """
+
     """
     a = 0
     for i in node_list:
         a = a + 1
         i.display_node_corners()
+
         if a == 20:
+            break
+        """
+
+    a = 0
+    for i in net_list:
+        a += 1
+        i.display_net()
+        i.find_coordinates_of_net()
+        i.calculate_net_wirelength()
+        i.calculate_net_size()
+
+        print("\n")
+
+        i.display_net_size()
+        i.display_net_wirelength()
+        if a == 15:
             break
