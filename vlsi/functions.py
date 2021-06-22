@@ -18,7 +18,7 @@ os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\ISPD\\{}'.format(
 
 folderName = "design"
 fileName = "design"
-os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\{}'.format(folderName))
+# os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\{}'.format(folderName)) uncomment when need it
 
 """"    Functions   """
 
@@ -101,11 +101,11 @@ def verify_files():
     return flag
 
 
-def parser():  # parsing the whole circuit
+def parser(path):  # parsing the whole circuit
 
     """               Start of Parse .nodes               """
 
-    file = open("{}.nodes".format(fileName))
+    file = open("{}{}.nodes".format(path, fileName))
     lines = file.readlines()
 
     saved = 0
@@ -168,16 +168,18 @@ def parser():  # parsing the whole circuit
 
     """               Start of Parse .pl               """
 
-    file = open("{}.pl".format(fileName))
+    file = open("{}{}.pl".format(path, fileName))
     lines = file.readlines()
 
-    # Skip first 4 lines - comments
-    for i in range(4, len(lines)):
+    # Skip first 4 lines - comments TODO delete it?
+    # Skip first 2 lines
+    for i in range(2, len(lines)):
         temp_parsing = lines[i].strip()
+        # temp_parsing = lines[i]
         temp_parsing = temp_parsing.split()  # temp_parsing type = list
 
-        node_name = temp_parsing[0]
-        node_x = int(temp_parsing[1])  # Lower Left Corner x Coordinate
+        node_name = temp_parsing[0]  # unused
+        node_x = int(temp_parsing[1])  # Lower Left Corner x Coordinate # TODO list index out of range
         node_y = int(temp_parsing[2])  # Lower Left Corner y Coordinate
 
         # match the node_names and
@@ -193,7 +195,7 @@ def parser():  # parsing the whole circuit
 
     """               Start of Parse .nets               """
 
-    file = open("{}.nets".format(fileName))
+    file = open("{}{}.nets".format(path, fileName))
     lines = file.readlines()
 
     saved = 0  # saving pointers that are used for parsing
@@ -277,7 +279,7 @@ def parser():  # parsing the whole circuit
 
     """               Start of Parse .scl               """
 
-    file = open("{}.scl".format(fileName))
+    file = open("{}{}.scl".format(path, fileName))
     lines = file.readlines()
 
     row_name = None
@@ -432,3 +434,5 @@ def parser():  # parsing the whole circuit
         i.display_net_wire_length()
         if a == 15:
             break
+
+        return node_list
