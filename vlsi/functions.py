@@ -100,7 +100,7 @@ def verify_files():
 
     return flag
 
-a
+
 def parser(path):  # parsing the whole circuit
 
     """               Start of Parse .nodes               """
