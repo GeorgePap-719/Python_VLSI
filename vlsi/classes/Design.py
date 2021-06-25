@@ -1,5 +1,5 @@
 # It will be used for the creation of DataFrame Design
-# But it may be deleter, cause we can create DF Design without this class
+# But it may be deleted, cause we can create DF Design without this class
 # TODO check later
 
 class Design:
