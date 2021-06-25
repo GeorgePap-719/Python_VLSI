@@ -7,6 +7,7 @@ import os
 from vlsi.classes.Net import Net
 from vlsi.classes.Node import Node
 from vlsi.classes.Row import Row
+from vlsi.classes.Design import Design
 
 """
 folderName = "ibm01_mpl6_placed_and_nettetris_legalized"
