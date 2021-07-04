@@ -4,10 +4,10 @@
 
 import os
 
+from vlsi.classes.Design import Design
 from vlsi.classes.Net import Net
 from vlsi.classes.Node import Node
 from vlsi.classes.Row import Row
-from vlsi.classes.Design import Design
 
 """
 folderName = "ibm01_mpl6_placed_and_nettetris_legalized"
@@ -172,7 +172,7 @@ def parser(path):  # parsing the whole circuit
 
     """               Start of Parse .pl               """
 
-    file = open("{}.pl".format(fileName))
+    file = open("{}{}.pl".format(path, fileName))
     lines = file.readlines()
 
     # Skip first 2 lines - comments
@@ -198,7 +198,7 @@ def parser(path):  # parsing the whole circuit
 
     """               Start of Parse .nets               """
 
-    file = open("{}.nets".format(fileName))
+    file = open("{}{}.nets".format(path, fileName))
     lines = file.readlines()
 
     saved = 0  # saving pointers that are used for parsing
@@ -273,10 +273,10 @@ def parser(path):  # parsing the whole circuit
 
     """               Start of Parse .scl               """
 
-    file = open("{}.scl".format(fileName))
+    file = open("{}{}.scl".format(path, fileName))
     lines = file.readlines()
 
-    row_name = None         #todo it is also used, check below
+    row_name = None
     row_coordinate = None
     row_sub = None
     row_numsites = None
@@ -394,6 +394,8 @@ def parser(path):  # parsing the whole circuit
 
     # Design calculations
     design_infos = Design(number_of_nodes, number_of_terminals, number_of_nets)
+
+    return node_list, row_list
 
     # TESTING PRINTS:
 
