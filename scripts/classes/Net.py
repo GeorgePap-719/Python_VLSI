@@ -1,6 +1,6 @@
 # TODO add comments
 
-from vlsi.classes.Node import Node
+from scripts.classes.Node import Node
 
 
 class Net:

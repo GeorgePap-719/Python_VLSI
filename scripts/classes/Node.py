@@ -1,7 +1,7 @@
 # TODO add comments
 
-from vlsi.classes.Point import Point
-from vlsi.classes.Row import Row
+from scripts.classes.Point import Point
+from scripts.classes.Row import Row
 
 
 class Node:

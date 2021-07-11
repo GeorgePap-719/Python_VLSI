@@ -1,7 +1,7 @@
 
 
 # 3rd try - parsing whole bookshelf in 1 file - main and import functions.py
-from vlsi.functions import *
+from scripts.functions import *
 
 if __name__ == "__main__":
     

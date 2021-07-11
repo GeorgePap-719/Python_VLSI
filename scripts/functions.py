@@ -4,10 +4,10 @@
 
 import os
 
-from vlsi.classes.Design import Design
-from vlsi.classes.Net import Net
-from vlsi.classes.Node import Node
-from vlsi.classes.Row import Row
+from scripts.classes.Design import Design
+from scripts.classes.Net import Net
+from scripts.classes.Node import Node
+from scripts.classes.Row import Row
 
 """
 folderName = "ibm01_mpl6_placed_and_nettetris_legalized"
@@ -180,7 +180,7 @@ def parser(path):  # parsing the whole circuit
         temp_parsing = lines[i].strip()
         temp_parsing = temp_parsing.split()  # temp_parsing type = list
 
-        node_name = temp_parsing[0]    # todo it is used, check if below
+        node_name = temp_parsing[0]
         node_x = int(temp_parsing[1])  # Lower Left Corner x Coordinate
         node_y = int(temp_parsing[2])  # Lower Left Corner y Coordinate
 
@@ -276,11 +276,12 @@ def parser(path):  # parsing the whole circuit
     file = open("{}{}.scl".format(path, fileName))
     lines = file.readlines()
 
-    row_name = None
+    row_name = None  # TODO do we need it?
     row_coordinate = None
     row_sub = None
     row_numsites = None
     row_height = None
+    number_of_rows = None
 
     row_list = []  # List of all rows for the current circuit
 
@@ -288,6 +289,12 @@ def parser(path):  # parsing the whole circuit
     for i in range(len(lines)):
         # .upper everything cause of insensitive chars
         temp_parsing = lines[i].strip(" ,.\n#:").upper()
+
+        if temp_parsing.find("NUMROWS") != -1:
+            point = temp_parsing.find("NUMROWS")
+            length = len("NUMROWS")
+            number_of_rows = temp_parsing[point + length:]
+            number_of_rows = number_of_rows.strip(": ")
 
         if temp_parsing.find("COREROW HORIZONTAL") != -1:
             name_counter += 1  # +1 for the next Row Name
@@ -364,10 +371,12 @@ def parser(path):  # parsing the whole circuit
                 print("Error: File is modified.")
 
             # row_height + row_coordinate = y_max of each row
-            new_row = Row(row_name, row_coordinate,
-                          (row_height + row_coordinate), row_sub, row_numsites)
+            # row = Row(row_name, row_coordinate,
+            #               (row_height + row_coordinate), row_sub, row_numsites)
 
-            row_list.append(new_row)  # add every row on the list of rows
+            row = Row(number_of_rows=number_of_rows, lower_left_y_coordinate=row_coordinate,
+                      row_height=row_height, lower_left_x_coordinate=row_sub, lower_right_x_coordinate=row_numsites)
+            row_list.append(row)  # add every row on the list of rows
 
     file.close()  # Close .scl file
     """               End of Parse .scl              """
@@ -389,8 +398,9 @@ def parser(path):  # parsing the whole circuit
         net.net_rows = list(dict.fromkeys(net.net_rows))  # remove duplicates
 
     # Update each row, with its density
-    for row in row_list:
-        row.calculate_row_density()
+    # Unneeded for now, it doesnt work as it is cause of constructor overloading
+    # for row in row_list:
+    #     row.calculate_row_density()
 
     # Design calculations
     design_infos = Design(number_of_nodes, number_of_terminals, number_of_nets)
