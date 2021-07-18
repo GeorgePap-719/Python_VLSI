@@ -6,7 +6,7 @@ setup(
     packages=[''],
     url='https://github.com/GeorgePap-719/Python_VLSI',
     license='MIT',
-    author='geopapadopoulos',
+    author='George Pap',
     author_email='george.719pap@gmail.com',
     description='a simple setup script to manage dependencies'
 )
