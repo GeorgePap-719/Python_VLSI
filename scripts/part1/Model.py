@@ -29,11 +29,12 @@ class Model:
             node_y = [node.node_y, node.node_y + node.node_height, node.node_y + node.node_height, node.node_y]
             ax.add_patch(patches.Polygon(xy=list(zip(node_x, node_y)), fill=False))
 
+
     # TODO needs check
     for net in net_list:
-        net_x = [net.x_min, net.x_min, net.x_min + net.x_max, net.x_min + net.x_max]
-        net_y = [net.y_min, net.y_min + net.y_max, net.y_min + net.y_max, net.y_min]
+        net_x = [net.x_min, net.x_min, net.x_max, net.x_max]
+        net_y = [net.y_min, net.y_max, net.y_max, net.y_min]
         ax.add_patch(patches.Polygon(xy=list(zip(net_x, net_y)), fill=False, linestyle="dashed"))
-
+    
     # display final result
     plt.show()
