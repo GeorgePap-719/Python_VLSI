@@ -405,7 +405,7 @@ def parser(path):  # parsing the whole circuit
     # Design calculations
     design_infos = Design(number_of_nodes, number_of_terminals, number_of_nets)
 
-    return node_list, row_list
+    return node_list, row_list, net_list
 
     # TESTING PRINTS:
 
