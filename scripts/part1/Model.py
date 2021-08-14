@@ -21,6 +21,7 @@ def do_overlap(node1: Node, node2: Node) -> bool:
         return False
 
 
+# noinspection PyUnboundLocalVariable
 def count_overlaps_in_row(row: Row) -> int:
     node_list = row.row_nodes
     counter = 0
@@ -44,7 +45,6 @@ def count_overlaps_in_row_list(row_list: list) -> int:
     return counter
 
 
-# TODO change name of class, maybe drop class object.
 def modeling(node_list: list, row_list: list, net_list: list):
     figure = plt.figure()
     figure.suptitle("modeling")
