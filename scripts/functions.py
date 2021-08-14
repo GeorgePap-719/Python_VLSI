@@ -384,8 +384,8 @@ def parser(path):  # parsing the whole circuit
     for row in row_list:
         for node in node_list:
             # check for both lower_y and upper_y to avoid Terminal nodes
-            if (node.lower_left_corner.y == row.lower_left_corner.y and
-                    node.upper_left_corner.y == row.upper_left_corner.y):
+            if (node.lower_left_corner.y == row.lower_left_y_coordinate and
+                    node.upper_left_corner.y == row.lower_left_y_coordinate + row.row_height):
                 node.set_row(row)
                 row.append_node(node)
 

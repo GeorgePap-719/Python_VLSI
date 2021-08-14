@@ -5,8 +5,7 @@ from scripts.classes.Point import Point
 class Row:
 
     # TODO y max should be a separate function and not a constructor parameter
-    # Note:  If multiple __init__ methods are written for the same class,
-    # then the latest one overwrites all the previous constructors
+    # TODO refactor this
     def __init__(self, row_name=None, y_min=None, y_max=None, x_min=None, x_max=None,
                  number_of_rows=None, lower_left_y_coordinate=None, row_height=None,
                  lower_left_x_coordinate=None, lower_right_x_coordinate=None):
