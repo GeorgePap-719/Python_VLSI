@@ -1,6 +1,7 @@
 from scripts import functions
 from scripts.part1.Legalization import legalizing_tetris_like_algo
-from scripts.part1.Model import modeling, count_overlaps_in_row_list
+from scripts.part1.Model import modeling
+from scripts.part1.Overlaps import count_overlaps_in_row_list
 
 if __name__ == "__main__":
     # if verify_files():

@@ -1,49 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib import patches
 
-from scripts.classes.Node import Node
-from scripts.classes.Point import Point
-from scripts.classes.Row import Row
-
-
-def to_point():
-    print("TODO")
-
-
-def do_overlap(node1: Node, node2: Node) -> bool:
-    if node1.node_type == "Non_Terminal" and node2.node_type == "Non_Terminal":
-        l1: Point = Point(node1.node_x, node1.node_x + node1.node_width)
-        r1: Point = Point(node1.node_y, node1.node_y + node1.node_height)
-        l2: Point = Point(node2.node_x, node2.node_x + node2.node_width)
-        r2: Point = Point(node2.node_y, node2.node_y + node2.node_height)
-        return Point.do_overlap(l1, r1, l2, r2)
-    else:
-        return False
-
-
-# noinspection PyUnboundLocalVariable
-def count_overlaps_in_row(row: Row) -> int:
-    node_list = row.row_nodes
-    counter = 0
-
-    for node1 in node_list:
-        for node2 in node_list:
-            if node1 == node2:
-                continue
-        if do_overlap(node1, node2):
-            counter += 1
-
-    return counter
-
-
-def count_overlaps_in_row_list(row_list: list) -> int:
-    counter = 0
-
-    for row in row_list:
-        counter += count_overlaps_in_row(row)
-
-    return counter
-
 
 def modeling(node_list: list, row_list: list, net_list: list):
     figure = plt.figure()

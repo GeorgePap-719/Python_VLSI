@@ -3,10 +3,11 @@ import operator
 
 from scripts.classes.Node import Node
 from scripts.classes.Row import Row
-from scripts.part1.Model import do_overlap
-
 
 # TODO clean the code
+from scripts.part1.Overlaps import simple_do_overlap, do_overlap, complex_do_overlap
+
+
 def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list):
     legalized_node_list: list = []
     for row in row_list:
@@ -87,7 +88,7 @@ def do_not_overlap_with_both_sides(left_node: Node, core_node: Node, right_node:
 
 def do_overlap_but_has_space_left(core_node: Node, node_that_can_not_be_moved: Node, row: Row,
                                   current_move: int) -> bool:
-    if do_overlap(core_node, node_that_can_not_be_moved) and \
+    if complex_do_overlap(core_node, node_that_can_not_be_moved) and \
             can_we_move_left_without_overlapping(core_node, node_that_can_not_be_moved, current_move):
         return True
     else:
@@ -116,9 +117,4 @@ def can_we_move_left_without_overlapping(current_node: Node, last_node: Node, cu
         return False
 
 
-def simple_do_overlap(node1: Node, node2: Node) -> bool:
-    if node1.node_x + node1.node_width >= node2.node_x or \
-            node2.node_x + node2.node_width >= node1.node_x:
-        return False
 
-    return True
