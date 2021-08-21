@@ -1,4 +1,6 @@
 # TODO add comments
+
+
 class Point:
 
     def __init__(self, x, y):
@@ -16,9 +18,9 @@ class Point:
 
         # To check if either rectangle is actually a line
         # For example  :  l1 ={-1,0}  r1={1,1}  l2={0,-1}  r2={0,1}
-        if l1.x == r1.x or l1.y == r1.y or l2.x == r2.x or l2.y == r2.y:
-            # the line cannot have positive overlap
-            return False
+        # if l1.x == r1.x or l1.y == r1.y or l2.x == r2.x or l2.y == r2.y:
+        # the line cannot have positive overlap
+        # return False
 
         # If one rectangle is on left side of other
         if l1.x >= r2.x or l2.x >= r1.x:
