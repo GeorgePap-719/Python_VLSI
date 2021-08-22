@@ -3,6 +3,13 @@
 from scripts.classes.Node import Node
 
 
+def total_calculate_net_wirelength(net_list: list) -> int:
+    wirelength = 0
+    for net in net_list:
+        wirelength += net.wirelength
+    return wirelength
+
+
 class Net:
 
     def __init__(self, net_name, net_degree):
@@ -87,7 +94,7 @@ class Net:
 
         for node in self.net_nodes:
             if (node != temp_internal_node_0 and node != temp_internal_node_1
-                and node != temp_internal_node_2
+                    and node != temp_internal_node_2
                     and node != temp_internal_node_3):
                 self.internal_nodes.append(node)
             else:

@@ -1,4 +1,5 @@
 from scripts import functions
+from scripts.classes.Net import total_calculate_net_wirelength
 from scripts.part1.Legalization import legalizing_tetris_like_algo
 from scripts.part1.Model import modeling
 from scripts.part1.Overlaps import count_overlaps_in_row_list
@@ -22,11 +23,14 @@ if __name__ == "__main__":
     print("counting overlaps")
     print(count_overlaps_in_row_list(row_list))
 
-    print("Legalizing with Tetris-like algorithm")
-    legalized_node_list, legalized_row_list = legalizing_tetris_like_algo(node_list, row_list, net_list)
+    print("Wire length")
+    print(total_calculate_net_wirelength(net_list))
 
-    # we should remove the nets fow now from this model.
-    modeling(legalized_node_list, legalized_row_list, net_list)
+    print("Legalizing with Tetris-like algorithm")
+    legalized_node_list, legalized_row_list, legalized_net_list = legalizing_tetris_like_algo(node_list, row_list,
+                                                                                              net_list)
+
+    modeling(legalized_node_list, legalized_row_list, legalized_net_list)
 
     print("overlaps in legalized row_list")
     print(count_overlaps_in_row_list(legalized_row_list))

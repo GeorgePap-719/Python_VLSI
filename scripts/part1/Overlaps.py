@@ -56,13 +56,26 @@ def complex_do_overlap(node1: Node, node2: Node) -> bool:
 
 def count_overlaps_in_row(row: Row) -> int:
     node_list = row.row_nodes
-    counter = 0
 
-    for node1 in node_list:
-        for node2 in node_list:
+    counter = 0
+    for index, node1 in enumerate(node_list):
+        for index2, node2 in enumerate(node_list):
+            index2 += index
             if node1 == node2:
                 continue
             if simple_do_overlap(node1, node2):
+                counter += 1
+
+    return counter
+
+
+def count_overlaps_in_row_simple(row: Row) -> int:
+    node_list = row.row_nodes
+    counter = 0
+
+    for index, node1 in enumerate(node_list):
+        if index + 1 != len(node_list):
+            if simple_do_overlap(node1, node_list[index + 1]):
                 counter += 1
 
     return counter
@@ -72,6 +85,6 @@ def count_overlaps_in_row_list(row_list: list) -> int:
     counter = 0
 
     for row in row_list:
-        counter += count_overlaps_in_row(row)
+        counter += count_overlaps_in_row_simple(row)
 
     return counter
