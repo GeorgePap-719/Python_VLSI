@@ -10,6 +10,7 @@ from scripts.part1.Overlaps import simple_do_overlap
 def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list):
     legalized_node_list: list = []
     for row in row_list:
+        legalized_row_nodes = []
         # starting to create new list of nodes because we are not sure in which state will be the data.
         # check to find the most left node and continue to find the next
         # sort list based on x attribute
@@ -23,7 +24,7 @@ def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list)
                     # we are in the most right object or the row has only one object
                     if index + 1 == len(sorted_list):
                         # TODO check for the case where there is only one object
-                        # if we had another input here we would get index out of bounds
+                        # if we had different input here we would get index out of bounds
                         if do_not_overlap_but_has_space_left(node, sorted_list[index - 1], current_move):
                             if best_move < current_move and \
                                     node.node_x - best_move >= 0:
@@ -46,14 +47,37 @@ def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list)
                 node.node_x = node.node_x - best_move
 
             legalized_node_list.append(node)
+            legalized_row_nodes.append(node)
             # after we move the node, we take as guarantee that we are done with it.
             # continue each step for all nodes in the row
 
         # row.row_nodes = list(legalized_node_list)
-        row.row_nodes = legalized_node_list
+        row.row_nodes = legalized_row_nodes
 
-    # TODO shouldn't we also change the nets?
+    # updated_net_list = update_net_list(net_list, legalized_node_list)
     return legalized_node_list, row_list, net_list
+
+
+# Wip
+def update_net_list(net_list: list, legalized_node_list: list) -> list:
+    updated_net_list = []
+    updated_net_nodes = []
+
+    for net in net_list:
+        for node in net.net_nodes:
+            updated_net_nodes.append(get_node_x_in_list(node.node_x, legalized_node_list))
+
+        net.net_nodes = updated_net_nodes
+        net.find_coordinates_of_net()
+        updated_net_list.append(net)
+
+    return updated_net_list
+
+
+def get_node_x_in_list(node_x: int, legalized_node_list: list):
+    for node in legalized_node_list:
+        if node_x == node.node_x:
+            return node
 
 
 def do_not_overlap(node1: Node, node2: Node) -> bool:
