@@ -6,15 +6,44 @@ from scripts.classes.Row import Row
 from scripts.part1.Overlaps import simple_do_overlap
 
 
-# TODO clean the code
+# TODO Wip
+def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list):
+    legalized_node_list: list = []
+    for row in row_list:
+        legalized_row_nodes = []
+        # starting to create new list of nodes because we are not sure in which state will be the data.
+        # sort list based on x attribute
+        sorted_list = sorted(row.row_nodes, key=operator.attrgetter('node_x'))
+        negative_counter = -1
+        for index, node in sorted_list:
+
+            best_left_move = 0
+            best_right_move = 0
+
+            if (index % 2) == 1:
+                node = node[negative_counter]
+                negative_counter -= negative_counter
+                # check if it is at the end of the line then we are ok e.g. right (x) = 100
+                if node.node_x + node.node_width != row.lower_right_x_coordinate:
+                    print("TODO")
+
+                print("TODO")
+            else:
+                # check if it is at the start of the line then we are ok e.g. left (x) = 0
+                if node.node_x != 0:
+                    print("TODO")
+
+                print("TODO")
+
+
 def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list):
     legalized_node_list: list = []
     for row in row_list:
         legalized_row_nodes = []
         # starting to create new list of nodes because we are not sure in which state will be the data.
-        # check to find the most left node and continue to find the next
         # sort list based on x attribute
-        sorted_list = sorted(row.row_nodes, key=operator.attrgetter('node_x'))  # probably redundant operation
+        sorted_list = sorted(row.row_nodes, key=operator.attrgetter('node_x'))
+        # check to find the most left node and continue to find the next
         for index, node in enumerate(sorted_list):
             # check if it is at the start of the line then we are ok e.g. left (x) = 0
             if node.node_x != 0:
@@ -38,11 +67,11 @@ def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list)
                                     best_move = current_move
 
                         else:
-                            if index + 1 != len(sorted_list):  # Not sure how the iteration gets in here
-                                if do_not_overlap_but_has_space_left(node, sorted_list[index - 1], current_move):
-                                    if best_move < current_move and \
-                                            node.node_x - best_move >= 0:
-                                        best_move = current_move
+                            # if index + 1 != len(sorted_list):  # Not sure how the iteration gets in here
+                            if do_not_overlap_but_has_space_left(node, sorted_list[index - 1], current_move):
+                                if best_move < current_move and \
+                                        node.node_x - best_move >= 0:
+                                    best_move = current_move
 
                 node.node_x = node.node_x - best_move
 
@@ -51,7 +80,6 @@ def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list)
             # after we move the node, we take as guarantee that we are done with it.
             # continue each step for all nodes in the row
 
-        # row.row_nodes = list(legalized_node_list)
         row.row_nodes = legalized_row_nodes
 
     updated_net_list = update_net_list(net_list, legalized_node_list)
