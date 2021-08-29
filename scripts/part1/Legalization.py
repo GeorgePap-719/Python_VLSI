@@ -3,10 +3,10 @@ import operator
 
 from scripts.classes.Node import Node
 from scripts.classes.Row import Row
-# TODO clean the code
 from scripts.part1.Overlaps import simple_do_overlap
 
 
+# TODO clean the code
 def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list):
     legalized_node_list: list = []
     for row in row_list:
@@ -54,18 +54,22 @@ def legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: list)
         # row.row_nodes = list(legalized_node_list)
         row.row_nodes = legalized_row_nodes
 
-    # updated_net_list = update_net_list(net_list, legalized_node_list)
-    return legalized_node_list, row_list, net_list
+    updated_net_list = update_net_list(net_list, legalized_node_list)
+    updated_node_list = update_node_list(node_list, legalized_node_list)
+    # row_list is already updated
+    return updated_node_list, row_list, updated_net_list
 
 
-# Wip
 def update_net_list(net_list: list, legalized_node_list: list) -> list:
     updated_net_list = []
     updated_net_nodes = []
 
     for net in net_list:
         for node in net.net_nodes:
-            updated_net_nodes.append(get_node_x_in_list(node.node_x, legalized_node_list))
+            if node.node_type == "Terminal":
+                updated_net_nodes.append(node)
+            else:
+                updated_net_nodes.append(get_node_name_in_list(node.node_name, legalized_node_list))
 
         net.net_nodes = updated_net_nodes
         net.find_coordinates_of_net()
@@ -74,9 +78,20 @@ def update_net_list(net_list: list, legalized_node_list: list) -> list:
     return updated_net_list
 
 
-def get_node_x_in_list(node_x: int, legalized_node_list: list):
-    for node in legalized_node_list:
-        if node_x == node.node_x:
+def update_node_list(node_list: list, legalized_node_list: list):
+    updated_node_list = []
+    for node in node_list:
+        if node.node_type == "Terminal":
+            updated_node_list.append(node)
+        else:
+            updated_node_list.append(get_node_name_in_list(node.node_name, legalized_node_list))
+
+    return updated_node_list
+
+
+def get_node_name_in_list(node_name: str, node_list: list):
+    for node in node_list:
+        if node_name == node.node_name:
             return node
 
 
