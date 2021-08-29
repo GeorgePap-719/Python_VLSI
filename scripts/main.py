@@ -34,3 +34,6 @@ if __name__ == "__main__":
 
     print("overlaps in legalized row_list")
     print(count_overlaps_in_row_list(legalized_row_list))
+
+    print("Wire length")
+    print(total_calculate_net_wirelength(legalized_net_list))
