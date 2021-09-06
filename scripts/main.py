@@ -43,7 +43,7 @@ if __name__ == "__main__":
                                                                                                     lr_row_list,
                                                                                                     lr_net_list)
 
-    print("Wire length")
+    print("Second Wire length")
     print(total_calculate_net_wirelength(legalized2_net_list))
 
     modeling(legalized2_node_list, legalized2_row_list, legalized2_net_list)
