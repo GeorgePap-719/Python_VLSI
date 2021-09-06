@@ -10,14 +10,13 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
     legalized_node_list: list = []
     for row in row_list:
         legalized_row_nodes = []
-        # starting to create new list of nodes because we are not sure in which state will be the data.
-        # sort list based on x attribute
-        sorted_list: list[Node] = sorted(row.row_nodes, key=operator.attrgetter('node_x'))
         negative_counter = -1  # -1 is the last object in a list, TODO better name
-        index = 0  # not used right now
         counter = 0
         true_index = 0  # TODO better name
 
+        # starting to create new list of nodes because we are not sure in which state will be the data.
+        # sort list based on x attribute
+        sorted_list: list[Node] = sorted(row.row_nodes, key=operator.attrgetter('node_x'))
         while counter + 1 <= len(sorted_list):
 
             best_left_move = 0
@@ -134,16 +133,13 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
             counter += 1
             legalized_node_list.append(node)
             legalized_row_nodes.append(node)
-            index += 1
 
             # after we move the node, we take as guarantee that we are done with it.
             # continue each step for all nodes in the row
         row.row_nodes = legalized_row_nodes
 
-    # updated_net_list = update_net_list(net_list, legalized_node_list)
-    updated_net_list = net_list
-    # updated_node_list = update_node_list(node_list, legalized_node_list)
-    updated_node_list = node_list
+    updated_net_list = update_net_list(net_list, legalized_node_list)
+    updated_node_list = update_node_list(node_list, legalized_node_list)
     # row_list is already updated
     return updated_node_list, row_list, updated_net_list
 
