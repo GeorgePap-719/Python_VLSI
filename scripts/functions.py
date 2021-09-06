@@ -4,9 +4,10 @@
 
 import os
 
-from vlsi.classes.Net import Net
-from vlsi.classes.Node import Node
-from vlsi.classes.Row import Row
+from scripts.classes.Design import Design
+from scripts.classes.Net import Net
+from scripts.classes.Node import Node
+from scripts.classes.Row import Row
 
 """
 folderName = "ibm01_mpl6_placed_and_nettetris_legalized"
@@ -18,7 +19,7 @@ os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\ISPD\\{}'.format(
 
 folderName = "design"
 fileName = "design"
-os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\{}'.format(folderName))
+# os.chdir('C:\\Users\\root\\Desktop\\Python_Pandas\\docs\\{}'.format(folderName)) uncomment when need it
 
 """"    Functions   """
 
@@ -101,15 +102,18 @@ def verify_files():
     return flag
 
 
-def parser():  # parsing the whole circuit
+def parser(path):  # parsing the whole circuit
 
     """               Start of Parse .nodes               """
 
-    file = open("{}.nodes".format(fileName))
+    file = open("{}{}.nodes".format(path, fileName))
     lines = file.readlines()
 
     saved = 0
     node_list = []  # List of all nodes for the current circuit
+    number_of_nodes = None
+    number_of_terminals = None
+    number_of_nets = None
 
     # Locate NumNodes + NumTerminals
     for i in range(len(lines)):
@@ -150,7 +154,7 @@ def parser():  # parsing the whole circuit
         node_width = int(temp[1])
         node_height = int(temp[2])
 
-        if len(temp) == 3:  # len == 3 -> Non Terminal
+        if len(temp) == 3:  # len == 3 -> Non_Terminal
             node_type = "Non_Terminal"
         elif len(temp) == 4:  # len == 4 -> Terminal
             node_type = "Terminal"
@@ -168,11 +172,11 @@ def parser():  # parsing the whole circuit
 
     """               Start of Parse .pl               """
 
-    file = open("{}.pl".format(fileName))
+    file = open("{}{}.pl".format(path, fileName))
     lines = file.readlines()
 
-    # Skip first 4 lines - comments
-    for i in range(4, len(lines)):
+    # Skip first 2 lines - comments
+    for i in range(2, len(lines)):
         temp_parsing = lines[i].strip()
         temp_parsing = temp_parsing.split()  # temp_parsing type = list
 
@@ -185,15 +189,16 @@ def parser():  # parsing the whole circuit
         for node in node_list:
             if node.node_name == node_name:
                 node.set_x_y(node_x, node_y)
-                node.set_points(node_x, node_x + node.node_width,
-                                node_y, node_y + node.node_height)
+                if node.node_type == "Non_Terminal":
+                    node.set_points(node_x, node_x + node.node_width,
+                                    node_y, node_y + node.node_height)
 
     file.close()  # Close .pl file
     """               End of Parse .pl               """
 
     """               Start of Parse .nets               """
 
-    file = open("{}.nets".format(fileName))
+    file = open("{}{}.nets".format(path, fileName))
     lines = file.readlines()
 
     saved = 0  # saving pointers that are used for parsing
@@ -218,7 +223,6 @@ def parser():  # parsing the whole circuit
             break
 
     # Locating all NetDegree's
-    # Filtering with .split
     name_counter = -1  # counter for names of the Nets
     for i in range(saved, len(lines)):
 
@@ -231,8 +235,6 @@ def parser():  # parsing the whole circuit
 
             temp_parsing = temp_parsing.replace(":", " ")
             temp_parsing = temp_parsing.split()
-
-            # print(temp_parsing,type(temp_parsing))
 
             net_degree = int(temp_parsing[1])
             net_name = "net{}".format(name_counter)
@@ -261,30 +263,25 @@ def parser():  # parsing the whole circuit
                     if node.node_name == current_node:
                         node.append_net(new_net.net_name)
 
+            new_net.find_coordinates_of_net()
+            new_net.calculate_net_wirelength()
+            new_net.calculate_net_size()
             net_list.append(new_net)  # add every net on the list of nets
 
     file.close()  # Close .nets file
     """               End of Parse .nets               """
 
-    """
-    a = 0
-    for i in node_list:
-        i.display_node_nets()
-        a += 1
-        if a == 30:
-            break
-    """
-
     """               Start of Parse .scl               """
 
-    file = open("{}.scl".format(fileName))
+    file = open("{}{}.scl".format(path, fileName))
     lines = file.readlines()
 
-    row_name = None
+    row_name = None  # TODO do we need it?
     row_coordinate = None
     row_sub = None
     row_numsites = None
     row_height = None
+    number_of_rows = None
 
     row_list = []  # List of all rows for the current circuit
 
@@ -292,6 +289,12 @@ def parser():  # parsing the whole circuit
     for i in range(len(lines)):
         # .upper everything cause of insensitive chars
         temp_parsing = lines[i].strip(" ,.\n#:").upper()
+
+        if temp_parsing.find("NUMROWS") != -1:
+            point = temp_parsing.find("NUMROWS")
+            length = len("NUMROWS")
+            number_of_rows = temp_parsing[point + length:]
+            number_of_rows = number_of_rows.strip(": ")
 
         if temp_parsing.find("COREROW HORIZONTAL") != -1:
             name_counter += 1  # +1 for the next Row Name
@@ -368,25 +371,64 @@ def parser():  # parsing the whole circuit
                 print("Error: File is modified.")
 
             # row_height + row_coordinate = y_max of each row
-            new_row = Row(row_name, row_coordinate,
-                          (row_height + row_coordinate), row_sub, row_numsites)
+            # row = Row(row_name, row_coordinate,
+            #               (row_height + row_coordinate), row_sub, row_numsites)
 
-            row_list.append(new_row)  # add every row on the list of rows
+            row = Row(number_of_rows=number_of_rows, lower_left_y_coordinate=row_coordinate,
+                      row_height=row_height, lower_left_x_coordinate=row_sub, lower_right_x_coordinate=row_numsites)
+            row_list.append(row)  # add every row on the list of rows
 
     file.close()  # Close .scl file
     """               End of Parse .scl              """
-
-    """   Find the row, each node is placed in   """
-    # check for both lower_y and upper_y to avoid Terminal nodes
-    # Terminals nodes, are outside of the rows.
+    # Find the row, each node is placed in
     for row in row_list:
         for node in node_list:
-            if (node.lower_left_corner.y == row.lower_left_corner.y and
-                    node.upper_left_corner.y == row.upper_left_corner.y):
+            # check for both lower_y and upper_y to avoid Terminal nodes
+            if (node.lower_left_corner.y == row.lower_left_y_coordinate and
+                    node.upper_left_corner.y == row.lower_left_y_coordinate + row.row_height):
                 node.set_row(row)
                 row.append_node(node)
 
+    # Find the row(s), each Net belongs to and the opposite
+    for net in net_list:
+        for node in net.net_nodes:
+            if node.node_type == "Non_Terminal":
+                net.append_row(node.node_row)
+                node.node_row.append_net(net)
+        net.net_rows = list(dict.fromkeys(net.net_rows))  # remove duplicates
+
+    # Update each row, with its density
+    # Unneeded for now, it doesnt work as it is cause of constructor overloading
+    # for row in row_list:
+    #     row.calculate_row_density()
+
+    # Design calculations
+    design_infos = Design(number_of_nodes, number_of_terminals, number_of_nets)
+
+    return node_list, row_list, net_list
+
     # TESTING PRINTS:
+
+    """
+    for net in net_list:
+        net.display_net_rows()
+        net.display_net_external_nodes()
+        net.display_net_internal_nodes()
+    print("\n\n**")
+    """
+    """
+    for row in row_list:
+        print("\n\n**")
+        row.display_row_nets()
+        row.display_row_nodes()
+    """
+
+    """
+    for net in net_list:
+        for row in net.net_rows:
+            print(type(row.net_rows))
+    """
+
     """
     for net in net_list:
         for node in node_list:
@@ -416,19 +458,22 @@ def parser():  # parsing the whole circuit
 
         if a == 20:
             break
-        """
 
+    """
+
+    """
     a = 0
     for i in net_list:
         a += 1
         i.display_net()
         i.find_coordinates_of_net()
-        i.calculate_net_wire_length()
+        i.calculate_net_wirelength()
         i.calculate_net_size()
 
         print("\n")
 
         i.display_net_size()
-        i.display_net_wire_length()
+        i.display_net_wirelength()
         if a == 15:
             break
+    """

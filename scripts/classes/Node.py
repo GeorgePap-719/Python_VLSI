@@ -1,7 +1,7 @@
 # TODO add comments
 
-from vlsi.classes.Point import Point
-from vlsi.classes.Row import Row
+from scripts.classes.Point import Point
+from scripts.classes.Row import Row
 
 
 class Node:
@@ -19,8 +19,8 @@ class Node:
         self.upper_left_corner = Point(None, None)
         self.upper_right_corner = Point(None, None)
 
-        self.node_nets = []  # net_names that this node are part of #TODO net objects
-        self.node_row = Row(None, None, None, None, None)  # row that this node is placed in
+        self.node_nets = []  # net_names that this node are part of #TODO net objects if needed
+        self.node_row = Row(None, None, None, None, None)
 
     # update the Coordinates x & y
     def set_x_y(self, node_x, node_y):
@@ -30,16 +30,13 @@ class Node:
     def set_row(self, row):
         self.node_row = row
 
-    # update the list of nets
     def append_net(self, net_name):
         self.node_nets.append(str(net_name))
 
     # calculate the coordinates of the 4-corners of the node
     # Terminals are dots, they do not have corners
     def set_points(self, x_min, x_max, y_min, y_max):
-        if self.node_type == "Terminal":
-            pass
-        else:
+        if self.node_type == "Non_Terminal":
             self.lower_left_corner = Point(x_min, y_min)
             self.lower_right_corner = Point(x_max, y_min)
             self.upper_left_corner = Point(x_min, y_max)
@@ -57,10 +54,9 @@ class Node:
               + " is placed in row: " + str(self.node_row.row_name))
 
     def display_node_nets(self):
-        print("\nNode " + str(self.node_name)
-              + " belongs to the net(s):  ")
-        for i in self.node_nets:
-            print(i, end=" ")
+        print("\nNode " + str(self.node_name) + " belongs to the net(s):  ")
+        for net in self.node_nets:
+            print(net, end=" ")
 
     def __str__(self):
         return (str(self.node_name) + " " + str(self.node_width) + " " +

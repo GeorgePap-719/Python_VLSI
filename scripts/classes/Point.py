@@ -1,4 +1,6 @@
 # TODO add comments
+
+
 class Point:
 
     def __init__(self, x, y):
@@ -7,3 +9,4 @@ class Point:
 
     def __str__(self):
         return " (" + str(self.x) + " , " + str(self.y) + ") "
+
