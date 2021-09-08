@@ -30,6 +30,13 @@ if __name__ == "__main__":
     print("Legalizing with Tetris-like algorithm")
     legalized_node_list, legalized_row_list, legalized_net_list = legalizing_tetris_like_algo(node_list, row_list,
                                                                                               net_list)
+
+    print("first detailed placement")
+    detailed_placed_node_list, detailed_placed_row_list, detailed_placed_net_list = first_detailed_placement(
+        legalized_node_list, legalized_row_list, legalized_net_list)
+
+    print("Wire length")
+    print(total_calculate_net_wirelength(detailed_placed_net_list))
     #
     # modeling(legalized_node_list, legalized_row_list, legalized_net_list)
     #
