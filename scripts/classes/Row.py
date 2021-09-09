@@ -60,6 +60,18 @@ class Row:
         print("\n" + str(self.row_name) + " has density = "
               + str(self.density) + "%")
 
+    def to_dict(self):
+        return {
+            'Row_name': self.row_name,
+            'Cells': [node.node_name for node in self.row_nodes],
+            'Nets': [net.net_name for net in self.row_nets],
+            'Coordinate_x_min': self.x_min,
+            'Coordinate_x_max': self.x_max,
+            'Coordinate_y_min': self.y_min,
+            'Coordinate_y_max': self.y_max,
+            'Density': self.density
+        }
+
     def __str__(self):
         return (str(self.row_name) + " - y_min: "
                 + str(self.y_min) + " - y_max: "

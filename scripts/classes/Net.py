@@ -137,6 +137,21 @@ class Net:
     def display_net_wirelength(self):
         print(str(self.net_name) + " wirelength = " + str(self.wirelength))
 
+    def to_dict(self):
+        return {
+            'Net_name': self.net_name,
+            'Nodes': [node.node_name for node in self.net_nodes],
+            'Rows': [row.row_name for row in self.net_rows],
+            'Internal_nodes': [node.node_name for node in self.internal_nodes],
+            'External_nodes': [node.node_name for node in self.external_nodes],
+            'x_min': self.x_min,
+            'x_max': self.x_max,
+            'y_min': self.y_min,
+            'y_max': self.y_max,
+            # 'list_Half_Perimeter_Wirelength': self.wirelength,
+            # 'list_Net_size': self.net_size,
+        }
+
     # not displaying the nodes that are part of the net
     def __str__(self):
         return str(self.net_name) + " " + str(self.net_degree)

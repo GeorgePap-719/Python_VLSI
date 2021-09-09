@@ -1,7 +1,3 @@
-# It will be used for the creation of DataFrame Design
-# But it may be deleted, cause we can create DF Design without this class
-# TODO check later
-
 class Design:
 
     def __init__(self, num_of_cells, num_of_terminals, num_of_nets):
@@ -13,6 +9,7 @@ class Design:
         self.height = None
         self.total_area = None
         self.total_cell_area = None
+        self.half_perimeter_wirelength = None
 
     def calculate_design_width_height(self):
         pass
@@ -24,13 +21,22 @@ class Design:
         pass
 
     def calculate_design_total_cell_area(self, node_list):
-        total_cell_area = 0
-        for node in node_list:
-            pass
+        # total_cell_area = 0
+        # for node in node_list:
+        pass
+
+    def calculate_design_half_perimeter_wirelength(self, net_list):
+        total_hpw = 0
+
+        for net in net_list:
+            total_hpw += net.wirelength
+
+        self.half_perimeter_wirelength = int(total_hpw)
 
     def __str__(self):
         return (str(self.density) + " " + str(self.num_of_cells)
                 + " " + str(self.num_of_terminals)
                 + " " + str(self.num_of_nets)
                 + " " + str(self.width) + " " + str(self.height)
-                + " " + str(self.total_area) + " " + str(self.total_cell_area))
+                + " " + str(self.total_area) + " " + str(self.total_cell_area)
+                + " " + str(self.half_perimeter_wirelength))

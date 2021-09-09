@@ -36,6 +36,7 @@ def first_detailed_placement(node_list: list, row_list: list, net_list: list):
                             # swap back positions
                             swap_positions(sorted_list, index2, index)
 
+    # print("oeoeoeo")
     return node_list, row_list, updated_net_list
 
 
