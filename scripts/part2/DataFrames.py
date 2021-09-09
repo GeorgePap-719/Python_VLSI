@@ -252,3 +252,25 @@ def mean_row_density(rows_df):
     mean = round(mean, 2)
 
     print("Mean Row Density: ", mean)
+
+
+def design_df_half_perimeter_wirelength(nets_df):
+
+    design_hpw = nets_df['Half_Perimeter_Wirelength'].sum()
+
+    return design_hpw
+
+
+def design_df_density(nodes_df, rows_df):
+
+    design_height = (rows_df['Coordinate_y_max'].max()
+                     - rows_df['Coordinate_y_min'].min())
+
+    design_width = (rows_df['Coordinate_x_max'].max()
+                    - rows_df['Coordinate_x_min'].min())
+
+    design_total_area = design_height * design_width
+    design_total_cell_area = nodes_df['Size'].sum()
+    density = (design_total_cell_area / design_total_area) * 100
+
+    return density
