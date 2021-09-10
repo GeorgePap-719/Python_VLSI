@@ -116,5 +116,6 @@ if __name__ == "__main__":
     # design_df_density(nodes_df, rows_df)
     print('\n')
 
-
-
+    node_with_most_connections(nodes_df, nets_df)
+    node_with_least_connections(nodes_df, nets_df)
+    mean_number_of_node_connections(nodes_df, nets_df)

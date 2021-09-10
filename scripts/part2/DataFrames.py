@@ -62,6 +62,93 @@ def mean_size_non_terminal_nodes(nodes_df):
     print("Mean size of Non Terminal Node(s): ", mean)
 
 
+def node_with_most_connections(nodes_df, nets_df):
+
+    temp_df = nodes_df[nodes_df['Type'].str.match('Non_Terminal')]
+    node_list = list(temp_df['Node_name'])
+    nets_node_list = list(nets_df['Nodes'])
+
+    flag = True
+    max_connections = None
+    max_node = None
+
+    for node_name in node_list:
+        connections = set()   # set, to avoid duplicate connections
+        for row in nets_node_list:
+            for elem in row:
+                if node_name == elem:
+                    connections.update(row)
+
+        # (len of set) - 1 = connections of a node.
+        # We decrease by one, cause in the set it's also the name of the node
+        # that we each time look for its connections. So we don't count it
+        # as a connection with itself.
+        if flag:
+            max_connections = len(connections) - 1
+            max_node = node_name
+            flag = False
+        elif max_connections < len(connections) - 1:
+            max_connections = len(connections) - 1
+            max_node = node_name
+
+    print("Cell " + str(max_node) + " has the most connections = "
+          + str(max_connections))
+
+
+def node_with_least_connections(nodes_df, nets_df):
+
+    temp_df = nodes_df[nodes_df['Type'].str.match('Non_Terminal')]
+    node_list = list(temp_df['Node_name'])
+    nets_node_list = list(nets_df['Nodes'])
+
+    flag = True
+    min_connections = None
+    min_node = None
+
+    for node_name in node_list:
+        connections = set()   # set, to avoid duplicate connections
+        for row in nets_node_list:
+            for elem in row:
+                if node_name == elem:
+                    connections.update(row)
+
+        # (len of set) - 1 = connections of a node.
+        # We decrease by one, cause in the set it's also the name of the node
+        # that we each time look for its connections. So we don't count it
+        # as a connection with itself.
+        if flag:
+            min_connections = len(connections) - 1
+            min_node = node_name
+            flag = False
+        elif min_connections > len(connections) - 1:
+            min_connections = len(connections) - 1
+            min_node = node_name
+
+    print("Cell " + str(min_node) + " has the least connections = "
+          + str(min_connections))
+
+
+def mean_number_of_node_connections(nodes_df, nets_df):
+    temp_df = nodes_df[nodes_df['Type'].str.match('Non_Terminal')]
+    node_list = list(temp_df['Node_name'])
+    nets_node_list = list(nets_df['Nodes'])
+
+    total_connections = 0
+
+    for node_name in node_list:
+        connections = set()   # set, to avoid duplicate connections
+        for row in nets_node_list:
+            for elem in row:
+                if node_name == elem:
+                    connections.update(row)
+
+        total_connections += len(connections) - 1
+
+    mean_connections = total_connections / len(nodes_df)
+    mean_connections = round(mean_connections,2)
+    print("Mean connections of design cells: ", mean_connections)
+
+
 # Nets DataFrame & functions for it
 def create_nets_df(net_list, nodes_df):
 
