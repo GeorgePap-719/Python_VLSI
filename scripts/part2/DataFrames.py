@@ -79,8 +79,6 @@ def find_min_max_on_nets_df(nodes_df, nets_df):
         nets_df.loc[nets_df['Net_name'] == net_name, 'Coordinate_y_min'] = y_min
         nets_df.loc[nets_df['Net_name'] == net_name, 'Coordinate_y_max'] = y_max
 
-    print(nets_df)
-
 
 def calculate_net_hpw(nets_df):
 
@@ -121,7 +119,7 @@ def row_density(nodes_df, rows_df):
         # set nodes area to the current Row
         rows_df.loc[rows_df['Row_name'] == row_name, 'Nodes_area'] = nodes_area
 
-    rows_df['Density(%)'] = (rows_df['Nodes_area'] / rows_df['Row_area']) * 100
+    rows_df['Density'] = (rows_df['Nodes_area'] / rows_df['Row_area']) * 100
 
 
 def create_design_df(nodes_df, nets_df, rows_df):
@@ -226,24 +224,24 @@ def smallest_net_based_on_nodes(nets_df):
 
 def smallest_row_based_on_density(rows_df):
 
-    min_density = int(rows_df["Density"].str.len().min())
-    min_rows_df = rows_df[rows_df.Density.str.len() == min_density]
+    min_density = int(rows_df["Density"].min())
+    min_rows_df = rows_df[rows_df.Density == min_density]
     min_rows_list = list(min_rows_df.Row_name)
 
     print("Minimum Row Density: ", min_density)
     print("- Row(s) with min density: ", min_rows_list)
-    # print("\n")
+    print("\n")
 
 
 def biggest_row_based_on_density(rows_df):
 
-    max_density = int(rows_df["Density"].str.len().max())
-    max_rows_df = rows_df[rows_df.Density.str.len() == max_density]
+    max_density = int(rows_df["Density"].max())
+    max_rows_df = rows_df[rows_df.Density == max_density]
     max_rows_list = list(max_rows_df.Row_name)
 
     print("Maximum Row Density: ", max_density)
     print("- Row(s) with max density: ", max_rows_list)
-    # print("\n")
+    print("\n")
 
 
 def mean_row_density(rows_df):
@@ -252,7 +250,7 @@ def mean_row_density(rows_df):
     mean = round(mean, 2)
 
     print("Mean Row Density: ", mean)
-
+    print("\n")
 
 def design_df_half_perimeter_wirelength(nets_df):
 

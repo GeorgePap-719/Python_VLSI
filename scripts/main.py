@@ -6,6 +6,8 @@ from scripts.part1.Legalization import legalizing_tetris_like_algo
 from scripts.part1.Model import modeling
 from scripts.part1.Overlaps import count_overlaps_in_row_list
 from scripts.part2.DetailPlacement import first_detailed_placement
+from scripts.part2.DataFrames import *
+
 
 if __name__ == "__main__":
     # change to appropriate path. If the path is not needed it can be left blank ("")
@@ -30,13 +32,16 @@ if __name__ == "__main__":
     print("Legalizing with Tetris-like algorithm")
     legalized_node_list, legalized_row_list, legalized_net_list = legalizing_tetris_like_algo(node_list, row_list,
                                                                                               net_list)
-
+    """
     print("first detailed placement")
     detailed_placed_node_list, detailed_placed_row_list, detailed_placed_net_list = first_detailed_placement(
         legalized_node_list, legalized_row_list, legalized_net_list)
-
+    
+    
     print("Wire length")
     print(total_calculate_net_wirelength(detailed_placed_net_list))
+    """
+
     #
     # modeling(legalized_node_list, legalized_row_list, legalized_net_list)
     #
@@ -59,4 +64,57 @@ if __name__ == "__main__":
     # print("overlaps in second legalized row_list")
     # print(count_overlaps_in_row_list(legalized2_row_list))
 
-    first_detailed_placement(legalized_node_list, legalized_row_list, legalized_net_list)
+    # first_detailed_placement(legalized_node_list, legalized_row_list, legalized_net_list)
+
+    # DataFrames
+
+    # Nodes DataFrame Functions
+    # nodes_df = create_nodes_df(node_list)
+    nodes_df = create_nodes_df(lr_node_list)
+    print("\nDisplay Nodes Dataframe: \n")
+    print(nodes_df)
+    print("\n")
+
+    # Nets DataFrame Functions
+    nets_df = create_nets_df(lr_net_list, nodes_df)
+    print("\nDisplay Nets Dataframe: \n")
+    print(nets_df)
+    print("\n")
+
+    # Rows DataFrame Functions
+    rows_df = create_rows_df(lr_row_list, nodes_df)
+    print("\nDisplay Rows Dataframe: \n")
+    print(rows_df)
+    print("\n")
+
+    # Design DataFrame Functions
+    design_df = create_design_df(nodes_df, nets_df, rows_df)
+    print("\nDisplay Designs Dataframe: \n")
+    print(design_df)
+    print("\n")
+
+    # Nodes Functions
+    biggest_non_terminal_node(nodes_df)
+    smallest_non_terminal_node(nodes_df)
+    mean_size_non_terminal_nodes(nodes_df)
+    print('\n')
+
+    # Nets Functions
+
+    biggest_net_based_on_nodes(nets_df)
+    smallest_net_based_on_nodes(nets_df)
+    print('\n')
+
+    # Rows Functions
+    smallest_row_based_on_density(rows_df)
+    biggest_row_based_on_density(rows_df)
+    mean_row_density(rows_df)
+    print('\n')
+
+    # Design Functions
+    # design_df_half_perimeter_wirelength(nets_df)
+    # design_df_density(nodes_df, rows_df)
+    print('\n')
+
+
+
