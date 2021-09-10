@@ -9,7 +9,11 @@ from scripts.part1.Legalization import legalizing_tetris_like_algo
 
 # noinspection DuplicatedCode
 def first_detailed_placement(node_list: list, row_list: list, net_list: list):
+    # update_net(net_list)
+    # print(total_calculate_net_wirelength(net_list))
+    # total_calculate_net_wirelength is already 7680 before it gets in here.
     updated_net_list: list = copy.deepcopy(net_list)
+
     changes_flag = True
     wirelength = total_calculate_net_wirelength(net_list)
 
@@ -28,10 +32,8 @@ def first_detailed_placement(node_list: list, row_list: list, net_list: list):
                         swap_positions(sorted_list, index, index2)
                         update_net(updated_net_list)
                         new_wirelength = total_calculate_net_wirelength(updated_net_list)
-                        print(new_wirelength)
                         if new_wirelength < wirelength:
                             print("found better wirelength")
-                            print(new_wirelength)
                             wirelength = new_wirelength
                             changes_flag = True
                             break  # make the first advantageous exchange
@@ -95,7 +97,6 @@ def third_detailed_placement(node_list: list, row_list: list, net_list: list):
                     if node.node_width == node2.node_width:
                         swap_positions(sorted_list, index, index2)
                         update_net(updated_net_list)
-                        print("wirelength")
                         new_wirelength = total_calculate_net_wirelength(updated_net_list)
                         if new_wirelength < wirelength:
                             print("found better wirelength")
