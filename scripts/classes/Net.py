@@ -1,7 +1,5 @@
 # TODO add comments
 
-from scripts.classes.Node import Node
-
 
 def total_calculate_net_wirelength(net_list: list) -> int:
     wirelength = 0
@@ -172,7 +170,7 @@ class Net:
         # (min=2) (max=oo) number of External nodes
         for node in self.net_nodes:
             if node.node_type == "Non_Terminal":
-                if(node.node_x == self.x_min or
+                if (node.node_x == self.x_min or
                         (node.node_x + node.node_width) == self.x_max or
                         node.node_y == self.y_min or
                         (node.node_y + node.node_height) == self.y_max):
@@ -182,7 +180,7 @@ class Net:
                     self.internal_nodes.append(node)
 
             elif node.node_type == "Terminal":
-                if(node.node_x == self.x_min or
+                if (node.node_x == self.x_min or
                         node.node_x == self.x_max or
                         node.node_y == self.y_min or
                         node.node_y == self.y_max):

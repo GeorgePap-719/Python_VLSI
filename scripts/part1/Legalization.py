@@ -240,6 +240,7 @@ def update_net_list(net_list: list, legalized_node_list: list) -> list:
 
         net.net_nodes = updated_net_nodes
         net.find_coordinates_of_net()
+        net.calculate_net_wirelength()
         updated_net_list.append(net)
 
     return updated_net_list
