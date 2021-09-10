@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas import DataFrame
 
 pd.set_option('display.width', 800)
 pd.set_option('display.max_columns', 20)
@@ -401,8 +402,8 @@ def swap_cells(nodes_df, nets_df, rows_df, design_df):
     nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_y_max'] = cell_1_y_min + 10
     nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Row_number'] = cell_1_row
 
-    print("\nNodes_df after swap: \n")
-    # print(nodes_df)
+    print("\nAfter swap: \n")
+    print(nodes_df)
 
     # Updates on Nets: x_min, x_max, y_min, y_max, Internals, Externals,
     #                  HPW, Size
@@ -413,12 +414,79 @@ def swap_cells(nodes_df, nets_df, rows_df, design_df):
     nets_df = nets_df.astype({"Coordinate_x_min": int, "Coordinate_x_max": int,
                               "Coordinate_y_min": int, "Coordinate_y_max": int})
 
-    # print(nets_df)
+    print("\n")
+    print(nets_df)
 
     # Updates on Rows: Cells, Density, Node_Area
     row_density(nodes_df, rows_df)
+    print("\n")
+    print(rows_df)
 
-    # print(cell_1, cell_1_x_max, cell_1_x_min, cell_1_y_max, cell_1_y_min, cell_1_row)
-    # print(cell_2, cell_2_x_max, cell_2_x_min, cell_2_y_max, cell_2_y_min,cell_2_row)
+    # Updates on Design: HPW, Density
+    create_design_df(nodes_df, nets_df, rows_df)
+    print("\n")
+    print(design_df)
 
 
+# Insert a new cell
+def insert_a_cell(nodes_df, nets_df, rows_df, design_df):
+
+    name = input("Give name of cell: ")
+    x_min = int(input("Give lower left x coordinate of cell: "))
+    y_min = int(input("Give lower left y coordinate of cell: "))
+    width = int(input("Give name of cell width: "))
+    x_max = x_min + width
+    height = 10
+    y_max = y_min + height
+    cell_type = "Non_Terminal"
+    size = width * height
+
+    nets = []
+    while True:
+        answer = input("Add a net? (Y/n): ")
+        if answer == "Y":
+            current_net_name = input("Give net name, that the cell belongs to: ")
+            nets.append(current_net_name)
+        else:
+            break
+
+    row_name = input("Give cell row number: ")
+
+    # Update Nodes_df with the new cell
+    line_df = DataFrame({"Node_name": name,
+                         "Width": width,
+                         "Height": height,
+                         "Type": cell_type,
+                         "Row_number": row_name,
+                         'Nets': [net_name for net_name in nets],
+                         'Coordinate_x_min': x_min,
+                         'Coordinate_y_min': y_min,
+                         'Coordinate_x_max': x_max,
+                         'Coordinate_y_max': y_max,
+                         'Size': size
+                         })
+
+    nodes_df = nodes_df.append(line_df, ignore_index=False)
+    print("\nAfter insert: \n")
+    print(nodes_df)
+
+    # Updates on Nets: x_min, x_max, y_min, y_max, Internals, Externals,
+    #                  HPW, Size
+    find_min_max_on_nets_df(nodes_df, nets_df)
+    calculate_net_hpw(nets_df)
+    calculate_net_size(nets_df)
+    nets_df = nets_df.astype({"Half_Perimeter_Wirelength": int, "Net_Size": int})
+    nets_df = nets_df.astype({"Coordinate_x_min": int, "Coordinate_x_max": int,
+                              "Coordinate_y_min": int, "Coordinate_y_max": int})
+    print("\n")
+    print(nets_df)
+
+    # Updates on Rows: Cells, Density, Node_Area
+    row_density(nodes_df, rows_df)
+    print("\n")
+    print(rows_df)
+
+    # Updates on Design: HPW, Density
+    create_design_df(nodes_df, nets_df, rows_df)
+    print("\n")
+    print(design_df)

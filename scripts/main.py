@@ -121,3 +121,4 @@ if __name__ == "__main__":
     mean_number_of_node_connections(nodes_df, nets_df)
 
     swap_cells(nodes_df, nets_df, rows_df, design_df)
+    insert_a_cell(nodes_df, nets_df, rows_df, design_df)
