@@ -28,6 +28,7 @@ def first_detailed_placement(node_list: list, row_list: list, net_list: list):
                         swap_positions(sorted_list, index, index2)
                         update_net(updated_net_list)
                         new_wirelength = total_calculate_net_wirelength(updated_net_list)
+                        print(new_wirelength)
                         if new_wirelength < wirelength:
                             print("found better wirelength")
                             print(new_wirelength)
