@@ -119,3 +119,5 @@ if __name__ == "__main__":
     node_with_most_connections(nodes_df, nets_df)
     node_with_least_connections(nodes_df, nets_df)
     mean_number_of_node_connections(nodes_df, nets_df)
+
+    swap_cells(nodes_df, nets_df, rows_df, design_df)

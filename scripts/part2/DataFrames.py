@@ -207,14 +207,14 @@ def find_min_max_on_nets_df(nodes_df, nets_df):
 
 def calculate_net_hpw(nets_df):
 
-    nets_df['Half_Perimeter_Wirelength'] = ((nets_df['x_max'] - nets_df['x_min'])
-                                    + (nets_df['y_max'] - nets_df['y_min']))
+    nets_df['Half_Perimeter_Wirelength'] = ((nets_df['Coordinate_x_max'] - nets_df['Coordinate_x_min'])
+                                    + (nets_df['Coordinate_y_max'] - nets_df['Coordinate_y_min']))
 
 
 def calculate_net_size(nets_df):
 
-    nets_df['Net_Size'] = ((nets_df['x_max'] - nets_df['x_min'])
-                           * (nets_df['y_max'] - nets_df['y_min']))
+    nets_df['Net_Size'] = ((nets_df['Coordinate_x_max'] - nets_df['Coordinate_x_min'])
+                           * (nets_df['Coordinate_y_max'] - nets_df['Coordinate_y_min']))
 
 
 def biggest_net_based_on_nodes(nets_df):
@@ -366,5 +366,59 @@ def design_df_density(nodes_df, rows_df):
 
     return density
 
+
+# Swap two cells and update all the DataFrames after the swap
+def swap_cells(nodes_df, nets_df, rows_df, design_df):
+
+    cell_1 = input("Give name of the first cell: ")
+    cell_2 = input("Give name of the second cell: ")
+
+    # cell_1_x_max = int(nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_x_max'])
+    # cell_1_y_max = int(nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_y_max'])
+
+    cell_1_x_min = int(nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_x_min'])
+    cell_1_y_min = int(nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_y_min'])
+    cell_1_width = int(nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Width'])
+    cell_1_row = str(nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Row_number'].to_string(index=False))
+
+    # cell_2_x_max = int(nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_x_max'])
+    # cell_2_y_max = int(nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_y_max'])
+
+    cell_2_x_min = int(nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_x_min'])
+    cell_2_y_min = int(nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_y_min'])
+    cell_2_width = int(nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Width'])
+    cell_2_row = str(nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Row_number'].to_string(index=False))
+
+    nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_x_min'] = cell_2_x_min
+    nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_y_min'] = cell_2_y_min
+    nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_x_max'] = cell_2_x_min + cell_1_width
+    nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Coordinate_y_max'] = cell_2_y_min + 10
+    nodes_df.loc[nodes_df['Node_name'] == cell_1, 'Row_number'] = cell_2_row
+
+    nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_x_min'] = cell_1_x_min
+    nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_y_min'] = cell_1_y_min
+    nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_x_max'] = cell_1_x_min + cell_2_width
+    nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Coordinate_y_max'] = cell_1_y_min + 10
+    nodes_df.loc[nodes_df['Node_name'] == cell_2, 'Row_number'] = cell_1_row
+
+    print("\nNodes_df after swap: \n")
+    # print(nodes_df)
+
+    # Updates on Nets: x_min, x_max, y_min, y_max, Internals, Externals,
+    #                  HPW, Size
+    find_min_max_on_nets_df(nodes_df, nets_df)
+    calculate_net_hpw(nets_df)
+    calculate_net_size(nets_df)
+    nets_df = nets_df.astype({"Half_Perimeter_Wirelength": int, "Net_Size": int})
+    nets_df = nets_df.astype({"Coordinate_x_min": int, "Coordinate_x_max": int,
+                              "Coordinate_y_min": int, "Coordinate_y_max": int})
+
+    # print(nets_df)
+
+    # Updates on Rows: Cells, Density, Node_Area
+    row_density(nodes_df, rows_df)
+
+    # print(cell_1, cell_1_x_max, cell_1_x_min, cell_1_y_max, cell_1_y_min, cell_1_row)
+    # print(cell_2, cell_2_x_max, cell_2_x_min, cell_2_y_max, cell_2_y_min,cell_2_row)
 
 
