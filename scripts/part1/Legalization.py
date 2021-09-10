@@ -1,4 +1,3 @@
-# Tetris-like legalization algorithm
 import operator
 
 from scripts.classes.Node import Node
@@ -18,6 +17,8 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
         # sort list based on x attribute
         sorted_list: list[Node] = sorted(row.row_nodes, key=operator.attrgetter('node_x'))
         while counter + 1 <= len(sorted_list):
+            upper_flag = False
+            lower_flag = False
 
             best_left_move = 0
             best_right_move = 0
@@ -36,11 +37,13 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_left_move < current_move and \
                                         node.node_x - best_left_move >= 0:
                                     best_left_move = current_move
+                                    upper_flag = True
 
                             if can_we_move_right_without_overlapping(node, sorted_list[new_index - 1], current_move):
                                 if best_right_move < current_move and \
                                         node.node_x + node.node_width + best_right_move <= 100:
                                     best_right_move = current_move
+                                    lower_flag = True
 
                         else:
                             if can_we_move_left_without_overlapping_both_sides(node, sorted_list[new_index - 1],
@@ -49,6 +52,7 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_left_move < current_move and \
                                         node.node_x - best_left_move >= 0:
                                     best_left_move = current_move
+                                    upper_flag = True
 
                             if can_we_move_right_without_overlapping_both_sides(node, sorted_list[new_index - 1],
                                                                                 sorted_list[new_index + 1],
@@ -56,11 +60,25 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_right_move < current_move and \
                                         node.node_x + node.node_width + best_right_move <= 100:
                                     best_right_move = current_move
+                                    lower_flag = True
 
-                    if best_right_move < best_left_move:
+                    """ Since we decide which is the best move based on the shortest length between left and right moves
+                    there is a case where if one block is already overlapped with another, the best move in its
+                    corresponding direction results in 0 and it is picked as the best move for the node. The problem
+                    is solved with simple True/False flag logic.
+                    
+                    :param upper_flag: is for best_left_moves
+                    :param lower_flag: is for best_right_moves
+                    """
+                    if lower_flag is True and upper_flag is False:
                         node.node_x += best_right_move
-                    else:
+                    elif upper_flag is True and lower_flag is False:
                         node.node_x -= best_left_move
+                    else:
+                        if best_right_move < best_left_move:
+                            node.node_x += best_right_move
+                        else:
+                            node.node_x -= best_left_move
 
                     negative_counter += negative_counter
 
@@ -76,10 +94,12 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_left_move < current_move and \
                                         node.node_x - best_left_move >= 0:
                                     best_left_move = current_move
+                                    upper_flag = True
                             if can_we_move_right(node, current_move):
                                 if best_right_move < current_move and \
                                         node.node_x + node.node_width + best_right_move <= 100:
                                     best_right_move = current_move
+                                    lower_flag = True
 
                         # we are in the first object
                         elif true_index == 0:
@@ -87,11 +107,13 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_left_move < current_move and \
                                         node.node_x - best_left_move >= 0:
                                     best_left_move = current_move
+                                    upper_flag = True
                             if can_we_move_right_without_overlapping_with_next_node(node, sorted_list[true_index + 1],
                                                                                     current_move):
                                 if best_right_move < current_move and \
                                         node.node_x + node.node_width + best_right_move <= 100:
                                     best_right_move = current_move
+                                    lower_flag = True
 
                         # last object in the list
                         elif true_index + 1 == len(sorted_list):  # not getting in here anymore
@@ -101,12 +123,14 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_left_move < current_move and \
                                         node.node_x - best_left_move >= 0:
                                     best_left_move = current_move
+                                    upper_flag = True
                             if can_we_move_right_without_overlapping_both_sides(node, sorted_list[true_index - 1],
                                                                                 sorted_list[true_index + 1],
                                                                                 current_move):
                                 if best_right_move < current_move and \
                                         node.node_x + node.node_width + best_right_move <= 100:
                                     best_right_move = current_move
+                                    lower_flag = True
 
                         # default case
                         else:
@@ -116,17 +140,24 @@ def lr_legalizing_tetris_like_algo(node_list: list, row_list: list, net_list: li
                                 if best_left_move < current_move and \
                                         node.node_x - best_left_move >= 0:
                                     best_left_move = current_move
+                                    upper_flag = True
                             if can_we_move_right_without_overlapping_both_sides(node, sorted_list[true_index - 1],
                                                                                 sorted_list[true_index + 1],
                                                                                 current_move):
                                 if best_right_move < current_move and \
                                         node.node_x + node.node_width + best_right_move <= 100:
                                     best_right_move = current_move
+                                    lower_flag = True
 
-                    if best_right_move < best_left_move:
+                    if lower_flag is True and upper_flag is False:
                         node.node_x += best_right_move
-                    else:
+                    elif upper_flag is True and lower_flag is False:
                         node.node_x -= best_left_move
+                    else:
+                        if best_right_move < best_left_move:
+                            node.node_x += best_right_move
+                        else:
+                            node.node_x -= best_left_move
 
                 true_index += 1
 
@@ -209,6 +240,7 @@ def update_net_list(net_list: list, legalized_node_list: list) -> list:
 
         net.net_nodes = updated_net_nodes
         net.find_coordinates_of_net()
+        net.calculate_net_wirelength()
         updated_net_list.append(net)
 
     return updated_net_list

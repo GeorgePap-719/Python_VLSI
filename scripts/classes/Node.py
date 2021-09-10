@@ -58,6 +58,19 @@ class Node:
         for net in self.node_nets:
             print(net, end=" ")
 
+    def to_dict(self):
+        return {
+            'Node_name': self.node_name,
+            'Width': self.node_width,
+            'Height': self.node_height,
+            'Type': self.node_type,
+            'Row_number': self.node_row.row_name,
+            'Nets': self.node_nets,
+            'Coordinate_x_min': self.node_x,
+            'Coordinate_y_min': self.node_y,
+            # 'list_size': self.node_width * self.node_height
+        }
+
     def __str__(self):
         return (str(self.node_name) + " " + str(self.node_width) + " " +
                 str(self.node_height) + " " + str(self.node_type) + " " +

@@ -21,10 +21,10 @@ class Row:
         self.x_max = x_max
         self.row_nodes = []  # list of nodes that are placed in this row
         self.row_nets = set()  # set of nets that are part of this row
-        self.lower_left_corner = Point(x_min, y_min)
-        self.lower_right_corner = Point(x_max, y_min)
-        self.upper_left_corner = Point(x_min, y_max)
-        self.upper_right_corner = Point(x_max, y_max)
+        # self.lower_left_corner = Point(x_min, y_min)
+        # self.lower_right_corner = Point(x_max, y_min)
+        # self.upper_left_corner = Point(x_min, y_max)
+        # self.upper_right_corner = Point(x_max, y_max)
         self.density = None
 
     # E.g. like this
@@ -59,6 +59,17 @@ class Row:
     def display_row_density(self):
         print("\n" + str(self.row_name) + " has density = "
               + str(self.density) + "%")
+
+    def to_dict(self):
+        return {
+            'Row_name': self.row_name,
+            'Cells': [node.node_name for node in self.row_nodes],
+            'Nets': [net.net_name for net in self.row_nets],
+            'Coordinate_x_min': self.x_min,
+            'Coordinate_x_max': self.x_max,
+            'Coordinate_y_min': self.y_min,
+            'Coordinate_y_max': self.y_max,
+        }
 
     def __str__(self):
         return (str(self.row_name) + " - y_min: "

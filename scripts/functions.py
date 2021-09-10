@@ -374,8 +374,12 @@ def parser(path):  # parsing the whole circuit
             # row = Row(row_name, row_coordinate,
             #               (row_height + row_coordinate), row_sub, row_numsites)
 
-            row = Row(number_of_rows=number_of_rows, lower_left_y_coordinate=row_coordinate,
-                      row_height=row_height, lower_left_x_coordinate=row_sub, lower_right_x_coordinate=row_numsites)
+            row = Row(number_of_rows=number_of_rows,
+                      lower_left_y_coordinate=row_coordinate,
+                      row_height=row_height, lower_left_x_coordinate=row_sub,
+                      lower_right_x_coordinate=row_numsites,
+                      row_name=row_name, y_max=(row_height + row_coordinate),
+                      y_min=row_coordinate, x_min=row_sub, x_max=row_numsites)
             row_list.append(row)  # add every row on the list of rows
 
     file.close()  # Close .scl file

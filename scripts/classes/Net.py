@@ -1,7 +1,5 @@
 # TODO add comments
 
-from scripts.classes.Node import Node
-
 
 def total_calculate_net_wirelength(net_list: list) -> int:
     wirelength = 0
@@ -32,6 +30,7 @@ class Net:
     def append_row(self, row):
         self.net_rows.append(row)
 
+    """
     def find_coordinates_of_net(self):
         start = 0
         temp_internal_node_0 = Node(None, None, None, None)
@@ -99,6 +98,96 @@ class Net:
                 self.internal_nodes.append(node)
             else:
                 self.external_nodes.add(node)
+    """
+
+    def find_coordinates_of_net(self):
+        start = 0
+
+        for node in self.net_nodes:
+            start += 1
+
+            if start == 1 and node.node_type == "Non_Terminal":
+
+                self.x_min = node.node_x
+                self.x_max = node.node_x + node.node_width
+                self.y_min = node.node_y
+                self.y_max = node.node_y + node.node_height
+
+                # temp_internal_node_0 = node
+                # temp_internal_node_1 = node
+                # temp_internal_node_2 = node
+                # temp_internal_node_3 = node
+
+            elif start == 1 and node.node_type == "Terminal":
+                self.x_min = node.node_x
+                self.x_max = node.node_x
+                self.y_min = node.node_y
+                self.y_max = node.node_y
+
+                # temp_internal_node_0 = node
+                # temp_internal_node_1 = node
+                # temp_internal_node_2 = node
+                # temp_internal_node_3 = node
+
+            else:
+                if node.node_type == "Non_Terminal":
+                    if node.node_x < self.x_min:
+                        self.x_min = node.node_x
+                        # temp_internal_node_0 = node
+                    if node.node_x + node.node_width > self.x_max:
+                        self.x_max = node.node_x + node.node_width
+                        # temp_internal_node_1 = node
+                    if node.node_y < self.y_min:
+                        self.y_min = node.node_y
+                        # temp_internal_node_2 = node
+                    if node.node_y + node.node_height > self.y_max:
+                        self.y_max = node.node_y + node.node_height
+                        # temp_internal_node_3 = node
+                else:
+                    if node.node_x < self.x_min:
+                        self.x_min = node.node_x
+                        # temp_internal_node_0 = node
+                    if node.node_x > self.x_max:
+                        self.x_max = node.node_x
+                        # temp_internal_node_1 = node
+                    if node.node_y < self.y_min:
+                        self.y_min = node.node_y
+                        # temp_internal_node_2 = node
+                    if node.node_y > self.y_max:
+                        self.y_max = node.node_y
+                        # temp_internal_node_3 = node
+        """
+        #  (min=2) (max=4) number of External nodes
+        for node in self.net_nodes:
+            if (node != temp_internal_node_0 and node != temp_internal_node_1
+                    and node != temp_internal_node_2
+                    and node != temp_internal_node_3):
+                self.internal_nodes.append(node)
+            else:
+                self.external_nodes.add(node)
+        """
+
+        # (min=2) (max=oo) number of External nodes
+        for node in self.net_nodes:
+            if node.node_type == "Non_Terminal":
+                if (node.node_x == self.x_min or
+                        (node.node_x + node.node_width) == self.x_max or
+                        node.node_y == self.y_min or
+                        (node.node_y + node.node_height) == self.y_max):
+
+                    self.external_nodes.add(node)
+                else:
+                    self.internal_nodes.append(node)
+
+            elif node.node_type == "Terminal":
+                if (node.node_x == self.x_min or
+                        node.node_x == self.x_max or
+                        node.node_y == self.y_min or
+                        node.node_y == self.y_max):
+
+                    self.external_nodes.add(node)
+                else:
+                    self.internal_nodes.append(node)
 
     def calculate_net_wirelength(self):
         self.wirelength = (self.x_max - self.x_min) + (self.y_max - self.y_min)
@@ -136,6 +225,21 @@ class Net:
 
     def display_net_wirelength(self):
         print(str(self.net_name) + " wirelength = " + str(self.wirelength))
+
+    def to_dict(self):
+        return {
+            'Net_name': self.net_name,
+            'Nodes': [node.node_name for node in self.net_nodes],
+            'Rows': [row.row_name for row in self.net_rows],
+            'Internal_nodes': [node.node_name for node in self.internal_nodes],
+            'External_nodes': [node.node_name for node in self.external_nodes],
+            # 'x_min': self.x_min,
+            # 'x_max': self.x_max,
+            # 'y_min': self.y_min,
+            # 'y_max': self.y_max,
+            # 'list_Half_Perimeter_Wirelength': self.wirelength,
+            # 'list_Net_size': self.net_size,
+        }
 
     # not displaying the nodes that are part of the net
     def __str__(self):
