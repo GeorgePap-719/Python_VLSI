@@ -88,13 +88,13 @@ if __name__ == "__main__":
     # DataFrames
 
     # Nodes DataFrame Functions
-    # nodes_df = create_nodes_df(node_list)
     nodes_df = create_nodes_df(lr_node_list)
     print("\nDisplay Nodes Dataframe: \n")
     print(nodes_df)
     print("\n")
 
     # Nets DataFrame Functions
+    # Erwthma 17: ypologismos emvadou enos net kaleitai mesa sto DataFrame
     nets_df = create_nets_df(lr_net_list, nodes_df)
     print("\nDisplay Nets Dataframe: \n")
     print(nets_df)
@@ -107,6 +107,7 @@ if __name__ == "__main__":
     print("\n")
 
     # Design DataFrame Functions
+    # Erwthma 16: To sinoliko mikos kalwdiou kaleitai mesa sto design_df
     design_df = create_design_df(nodes_df, nets_df, rows_df)
     print("\nDisplay Designs Dataframe: \n")
     print(design_df)
@@ -119,7 +120,6 @@ if __name__ == "__main__":
     print('\n')
 
     # Nets Functions
-
     biggest_net_based_on_nodes(nets_df)
     smallest_net_based_on_nodes(nets_df)
     print('\n')
@@ -128,11 +128,6 @@ if __name__ == "__main__":
     smallest_row_based_on_density(rows_df)
     biggest_row_based_on_density(rows_df)
     mean_row_density(rows_df)
-    print('\n')
-
-    # Design Functions
-    # design_df_half_perimeter_wirelength(nets_df)
-    # design_df_density(nodes_df, rows_df)
     print('\n')
 
     node_with_most_connections(nodes_df, nets_df)
