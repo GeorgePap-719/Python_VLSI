@@ -8,7 +8,6 @@ def modeling(node_list: list, row_list: list, net_list: list):
     ax = figure.add_subplot()
     row_number = 1
 
-    # TODO if there is enough time and will create function to return random colors in hex
     colors = ['#caa24e', '#caa24e', '#5a3e42', '#b35031', '#5a3e42', '#6e6e64', '#8f050e', '#e3ce82']
     number_of_colors = 0
 

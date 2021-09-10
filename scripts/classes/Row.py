@@ -1,11 +1,7 @@
 # TODO add comments
-from scripts.classes.Point import Point
-
 
 class Row:
 
-    # TODO y max should be a separate function and not a constructor parameter
-    # TODO refactor this
     def __init__(self, row_name=None, y_min=None, y_max=None, x_min=None, x_max=None,
                  number_of_rows=None, lower_left_y_coordinate=None, row_height=None,
                  lower_left_x_coordinate=None, lower_right_x_coordinate=None):
@@ -21,15 +17,8 @@ class Row:
         self.x_max = x_max
         self.row_nodes = []  # list of nodes that are placed in this row
         self.row_nets = set()  # set of nets that are part of this row
-        # self.lower_left_corner = Point(x_min, y_min)
-        # self.lower_right_corner = Point(x_max, y_min)
-        # self.upper_left_corner = Point(x_min, y_max)
-        # self.upper_right_corner = Point(x_max, y_max)
-        self.density = None
 
-    # E.g. like this
-    def get_y_max(self):
-        return self.row_height + self.y_min
+        self.density = None
 
     def append_node(self, node):
         if node.node_type == "Non_Terminal":
